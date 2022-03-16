@@ -35,14 +35,29 @@ a {
     display: grid;
     justify-content: center;
 
+    &.gap-medium {
+        grid-gap: 55px;
+    }
+
+    &.gap-row-big {
+        row-gap: 65px;
+    }
+
     &.col-2 {
         grid-template-columns: 1fr 1fr;
-        grid-gap: 55px;
+    }
+
+    &.col-4 {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 
     @media (max-width: 800px) {
         &.col-2 {
             grid-template-columns: 1fr;
+        }
+
+        &.col-4 {
+            grid-template-columns: 1fr 1fr;
         }
     }
 }

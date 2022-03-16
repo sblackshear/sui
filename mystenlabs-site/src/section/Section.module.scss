@@ -25,6 +25,7 @@
 .title {
     font-size: 55px;
     margin-bottom: 19px;
+    text-transform: capitalize;
 }
 
 .description {
@@ -59,4 +60,8 @@
     padding-right: 0;
     margin-left: -2rem; // padding of page container
     margin-right: -2rem;
+
+    > .description {
+        color: values.$section-transparent-alt-color;
+    }
 }

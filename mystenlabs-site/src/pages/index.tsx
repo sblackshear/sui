@@ -5,17 +5,21 @@ import Link from '../link/Link';
 import PageHeadline from '../page-headline/PageHeadline';
 import ProductCard from '../product-card/ProductCard';
 import Section from '../section/Section';
+import TeamMember from '../team-member/TeamMember';
+import { teamMembers as allTeam } from '../team-member/team-members';
 import TopNavHeader from '../top-nav-header/TopNavHeader';
 
 import type { NextPage } from 'next';
 
-import styles from '../styles/Home.module.scss';
+import st from '../styles/Home.module.scss';
+
+const teamMembers = allTeam.slice(0, 8);
 
 const Home: NextPage = () => {
     const nextSectionHref = '/#ecosystem';
     const nextSectionHrefExternal = false;
     return (
-        <div className={styles.container}>
+        <div className={st.container}>
             <Head>
                 <title>
                     MystenLabs - Creating Foundational Infrastructure For Web3.0
@@ -28,7 +32,7 @@ const Home: NextPage = () => {
             </Head>
 
             <TopNavHeader />
-            <main className={styles.main}>
+            <main className={st.main}>
                 <PageHeadline
                     nextSectionHref={nextSectionHref}
                     nextSectionHrefExternal={nextSectionHrefExternal}
@@ -59,7 +63,7 @@ const Home: NextPage = () => {
                     title="What we're building"
                     description="Mysten Labs is built to accelerate the adoption of web3. Let us build the foundation of web3. You will create the products of tomorrow."
                 >
-                    <div className="grid col-2">
+                    <div className="grid col-2 gap-medium">
                         <ProductCard
                             icon="sui"
                             iconBg="blue-pattern"
@@ -76,6 +80,29 @@ const Home: NextPage = () => {
                             href="https://sui.io" // TODO: link to move
                             external={true}
                         />
+                    </div>
+                </Section>
+                <Section
+                    id="about-us"
+                    label="About us"
+                    title="Meet the team"
+                    description="We are a team of veteran innovators, storytellers and developers on a mission to bring true digital ownership to the masses."
+                    variant="transparent"
+                >
+                    <div className="grid col-4 gap-row-big">
+                        {teamMembers.map((aMember) => (
+                            <TeamMember {...aMember} key={aMember.name} />
+                        ))}
+                    </div>
+                    <div className={st['team-actions']}>
+                        <Link
+                            to="/about-us"
+                            variant="btn"
+                            btnStyle="secondary"
+                            external={false}
+                        >
+                            View full team
+                        </Link>
                     </div>
                 </Section>
             </main>
