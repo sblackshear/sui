@@ -1,1 +1,11 @@
-$bg-colour: black;
+$black: black;
+$white: white;
+$bg-colour: $black;
+$header-bg-colour: $white;
+$border-radius: 76px;
+$btn-primary-bg: #ffd8e6;
+$btn-primary-color: #d40551;
+$btn-primary-border: none;
+$btn-secondary-bg: $black;
+$btn-secondary-color: $white;
+$btn-secondary-border: 1px solid rgba(255, 255, 255, 0.19);

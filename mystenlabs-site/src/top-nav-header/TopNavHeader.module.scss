@@ -1,5 +1,55 @@
+@use '../styles/values.scss';
+@use '../styles/mysten-icons.scss' as icons;
+
+.top-nav-header {
+    background-color: values.$header-bg-colour;
+    position: sticky;
+    top: 0;
+    margin-top: 43px;
+    padding: 12px 15px 12px 25px;
+    border-radius: values.$border-radius;
+    overflow-x: hidden;
+    color: values.$black;
+    z-index: 99999;
+}
+
 .nav-list {
     margin: 0;
     padding: 0;
     list-style: none;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: center;
+    overflow-x: auto;
+
+    .nav-list {
+        overflow-x: unset;
+    }
+}
+
+.nav-item {
+    margin-right: 38px;
+    white-space: nowrap;
+
+    &:last-child {
+        margin-right: 0;
+    }
+}
+
+.extend {
+    justify-content: center;
+}
+
+.match-logo {
+    flex-basis: 169px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.discord-icon {
+    @include icons.icon('discord');
+
+    margin-left: 5px;
 }

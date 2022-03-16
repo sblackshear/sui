@@ -1,0 +1,39 @@
+@use '../styles/values.scss';
+
+.btn,
+.link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+}
+
+.btn {
+    border-radius: values.$border-radius;
+    padding: 18px 38px;
+    border: values.$btn-primary-border;
+    background-color: values.$btn-primary-bg;
+    color: values.$btn-primary-color;
+
+    &.secondary {
+        border: values.$btn-secondary-border;
+        background-color: values.$btn-secondary-bg;
+        color: values.$btn-secondary-color;
+    }
+}
+
+.link {
+    text-decoration: none;
+
+    &.plain:hover {
+        text-decoration: none;
+    }
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.disabled {
+    cursor: default;
+}

@@ -1,22 +1,22 @@
+@use '../styles/mysten-icons.scss' as icons;
+@use '../styles/values.scss';
+
 .logo {
     display: flex;
     flex-direction: row;
-    height: 25px;
-    align-items: baseline;
+    align-items: center;
 }
 
 .icon {
-    background-image: url('../../public/logo.svg');
-    background-repeat: no-repeat;
-    width: 50px;
-    height: 25px;
+    @include icons.icon(logo);
+
+    font-size: 20px;
 }
 
 .txt {
-    background-image: url('../assets/images/logo-txt.svg');
-    background-repeat: no-repeat;
-    background-position: 0 center;
-    flex: 1;
-    margin-left: 8px;
-    height: 25px;
+    @include icons.icon(logo-txt);
+
+    margin-left: 10px;
+    font-size: 20px;
+    margin-top: 3px;
 }
