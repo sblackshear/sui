@@ -1,0 +1,72 @@
+@use '../styles/values.scss';
+@use '../styles/mysten-icons.scss' as icons;
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    position: relative;
+}
+
+$header-space: values.$header-height + values.$header-total-vertical-margin;
+$empty-space: calc($header-space + values.$main-top-padding);
+
+.full {
+    height: calc(100vh - $empty-space);
+}
+
+.half {
+    height: calc(50vh - $empty-space);
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.headline {
+    font-size: 65px;
+    padding: 0 40px;
+    text-align: center;
+    max-width: 60%;
+}
+
+.actions {
+    display: flex;
+    margin-top: 60px;
+
+    > * {
+        margin-right: 20px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
+
+.arrow {
+    @include icons.icon(arrow);
+
+    font-size: 20px;
+    color: values.$primary;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 1290px) {
+    .headline {
+        max-width: 80%;
+    }
+}
+
+@media (max-width: 830px) {
+    .headline {
+        max-width: 90%;
+        font-size: 40px;
+        padding: 0 20px;
+    }
+}

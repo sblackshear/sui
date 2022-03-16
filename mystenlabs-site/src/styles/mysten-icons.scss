@@ -4,11 +4,12 @@ $icons: (
     'logo': '\e900',
     'logo-txt': '\e901',
     'discord': '\e902',
+    'arrow': '\e903',
 );
 
 %icon {
     /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: mysten-icons !important;
+    font-family: mysten-icons !important; /* stylelint-disable-line font-family-no-missing-generic-family-keyword */
     speak: never;
     font-style: normal;
     font-weight: normal;
@@ -26,6 +27,7 @@ $icons: (
     @extend %icon;
 
     &::before {
+        /* stylelint-disable-next-line function-no-unknown */
         content: map.get($icons, $icon);
     }
 }
