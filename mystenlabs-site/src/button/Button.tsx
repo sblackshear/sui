@@ -12,7 +12,7 @@ import st from './Button.module.scss';
 
 export type ButtonProps = RestartBtnProps & {
     variant?: 'link' | 'linkPlain' | 'btn';
-    btnStyle?: 'primary' | 'secondary';
+    btnStyle?: 'primary' | 'secondary' | 'alternative';
 };
 
 function Button<T>(props: ButtonProps, ref: ForwardedRef<T>) {

@@ -9,7 +9,7 @@ import type { ReactNode } from 'react';
 export type LinkProps = {
     label?: string | ReactNode;
     to: string;
-    external?: boolean;
+    external?: boolean; //TODO: remove this - detect from to field
     children?: ReactNode;
     variant?: ButtonProps['variant'];
     btnStyle?: ButtonProps['btnStyle'];

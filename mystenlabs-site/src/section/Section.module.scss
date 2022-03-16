@@ -1,0 +1,62 @@
+@use '../styles/values.scss';
+
+.section {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    margin-top: 30px;
+    padding: 90px 50px;
+    border-radius: values.$section-border-radius;
+}
+
+.label,
+.title {
+    margin: 0;
+    text-align: center;
+}
+
+.label {
+    text-transform: uppercase;
+    font-size: 12px;
+    color: values.$primary;
+    margin-bottom: 23px;
+}
+
+.title {
+    font-size: 55px;
+    margin-bottom: 19px;
+}
+
+.description {
+    font-size: 16px;
+    max-width: 550px;
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.primary {
+    background-color: values.$section-primary-bg;
+    color: values.$section-primary-color;
+
+    > .description {
+        color: values.$section-primary-alt-color;
+    }
+}
+
+.secondary {
+    background-color: values.$section-secondary-bg;
+    color: values.$section-secondary-color;
+
+    > .description {
+        color: values.$section-secondary-alt-color;
+    }
+}
+
+.transparent {
+    background-color: transparent;
+    color: inherit;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: -2rem; // padding of page container
+    margin-right: -2rem;
+}

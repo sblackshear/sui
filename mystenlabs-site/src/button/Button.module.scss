@@ -20,6 +20,12 @@
         background-color: values.$btn-secondary-bg;
         color: values.$btn-secondary-color;
     }
+
+    &.alternative {
+        border: values.$btn-alternative-border;
+        background-color: values.$btn-alternative-bg;
+        color: values.$btn-alternative-color;
+    }
 }
 
 .link {

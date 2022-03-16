@@ -30,3 +30,26 @@ a {
 * {
     box-sizing: border-box;
 }
+
+.grid {
+    display: grid;
+    justify-content: center;
+
+    &.col-2 {
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 55px;
+    }
+
+    @media (max-width: 800px) {
+        &.col-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .grid {
+        width: 100%;
+        flex-direction: column;
+    }
+}

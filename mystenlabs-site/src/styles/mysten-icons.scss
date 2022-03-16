@@ -5,6 +5,8 @@ $icons: (
     'logo-txt': '\e901',
     'discord': '\e902',
     'arrow': '\e903',
+    'sui': '\e904',
+    'move': '\e905',
 );
 
 %icon {
@@ -20,6 +22,7 @@ $icons: (
     -moz-osx-font-smoothing: grayscale;
 }
 
+// TODO: pre-generate the icon classes and use a component for the icons
 @mixin icon($icon) {
     @if not map.has-key($icons, $icon) {
         @error "Icon #{$icon} not found in icons map";

@@ -68,14 +68,6 @@
         'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace;
 }
 
-.grid {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    max-width: 800px;
-}
-
 .card {
     margin: 1rem;
     padding: 1.5rem;
@@ -109,11 +101,4 @@
 .logo {
     height: 1em;
     margin-left: 0.5rem;
-}
-
-@media (max-width: 600px) {
-    .grid {
-        width: 100%;
-        flex-direction: column;
-    }
 }
