@@ -33,7 +33,12 @@ function TeamMember({
                 {img ? (
                     // TODO: can we use @next/img for static site? check
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={img} alt={name} className={st.img} />
+                    <img
+                        src={img}
+                        alt={name}
+                        className={st.img}
+                        loading="lazy"
+                    />
                 ) : null}
             </div>
             <span className={st.name}>{name}</span>

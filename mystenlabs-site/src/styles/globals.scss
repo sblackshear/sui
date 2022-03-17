@@ -34,6 +34,11 @@ a {
 .grid {
     display: grid;
     justify-content: center;
+    justify-items: center;
+
+    &.gap-small {
+        grid-gap: 35px;
+    }
 
     &.gap-medium {
         grid-gap: 55px;
@@ -58,6 +63,10 @@ a {
 
         &.col-4 {
             grid-template-columns: 1fr 1fr;
+        }
+
+        &.gap-small {
+            grid-gap: 15px;
         }
     }
 }

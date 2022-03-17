@@ -1,6 +1,9 @@
+import cl from 'classnames';
 import Head from 'next/head';
 
 import Footer from '../footer/Footer';
+import InvestorBadge from '../investor-badge/InvestorBadge';
+import { allInvestors } from '../investor-badge/investors';
 import Link from '../link/Link';
 import PageHeadline from '../page-headline/PageHeadline';
 import ProductCard from '../product-card/ProductCard';
@@ -13,7 +16,9 @@ import type { NextPage } from 'next';
 
 import st from '../styles/Home.module.scss';
 
-const teamMembers = allTeam.slice(0, 8);
+const TEAM_MEMBERS = allTeam.slice(0, 8);
+const HIGHLIGHTED_INVESTORS = allInvestors.filter((i) => i.highlight);
+const REST_INVESTORS = allInvestors.filter((i) => !i.highlight);
 
 const Home: NextPage = () => {
     const nextSectionHref = '/#ecosystem';
@@ -90,7 +95,7 @@ const Home: NextPage = () => {
                     variant="transparent"
                 >
                     <div className="grid col-4 gap-row-big">
-                        {teamMembers.map((aMember) => (
+                        {TEAM_MEMBERS.map((aMember) => (
                             <TeamMember {...aMember} key={aMember.name} />
                         ))}
                     </div>
@@ -103,6 +108,31 @@ const Home: NextPage = () => {
                         >
                             View full team
                         </Link>
+                    </div>
+                </Section>
+                <Section
+                    id="investors"
+                    label="Investors"
+                    title="Meet Our Backers"
+                    description="Backed by top firms and visionaries"
+                    variant="secondary"
+                >
+                    <div className="grid col-2 gap-small">
+                        {HIGHLIGHTED_INVESTORS.map((i) => (
+                            <InvestorBadge key={i.href} {...i} />
+                        ))}
+                    </div>
+                    <div
+                        className={cl(
+                            'grid',
+                            'col-4',
+                            'gap-small',
+                            st.investors
+                        )}
+                    >
+                        {REST_INVESTORS.map((i) => (
+                            <InvestorBadge key={i.href} {...i} />
+                        ))}
                     </div>
                 </Section>
             </main>

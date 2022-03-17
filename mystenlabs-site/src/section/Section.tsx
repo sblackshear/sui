@@ -9,7 +9,7 @@ export type SectionProps = {
     id: string;
     label: string;
     title: string;
-    description: string;
+    description?: string;
     children: ReactNode | ReactNode[];
     variant?: 'primary' | 'secondary' | 'transparent';
 };
@@ -26,7 +26,9 @@ function Section({
         <section id={id} className={cl(st.section, st[variant])}>
             <h6 className={st.label}>{label}</h6>
             <h3 className={st.title}>{title}</h3>
-            <div className={st.description}>{description}</div>
+            {description ? (
+                <div className={st.description}>{description}</div>
+            ) : null}
             <div className={st.content}>{children}</div>
         </section>
     );

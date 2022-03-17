@@ -1,0 +1,18 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.highlight {
+        background-color: #f9f9f9;
+        border-radius: 19px;
+        padding: 20px;
+        width: 100%;
+    }
+}
+
+.img {
+    mix-blend-mode: multiply;
+    max-width: 100%;
+    max-height: 100%;
+}
