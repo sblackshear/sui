@@ -4,6 +4,7 @@ import evanImg from '../assets/images/people/Evan-Cheng.png';
 import kohImg from '../assets/images/people/Koh-Kim.png';
 import samImg from '../assets/images/people/Sam-Blackshear.png';
 import todImg from '../assets/images/people/todd-fiala.png';
+import georgeImg from '../assets/images/people/george-danezis.png';
 
 function makeTeamMember(
     name: string,
@@ -45,7 +46,7 @@ export const teamMembers = [
     makeTeamMember(
         'George Danezis',
         'Co-Founder, Chief Scientist',
-        undefined,
+        georgeImg.src,
         'https://www.linkedin.com/in/gdanezis/',
         'https://twitter.com/gdanezis'
     ),
