@@ -27,13 +27,16 @@ $icons: (
 }
 
 // TODO: pre-generate the icon classes and use a component for the icons
-@mixin icon($icon) {
+@mixin icon($icon, $as: 'before') {
     @if not map.has-key($icons, $icon) {
         @error "Icon #{$icon} not found in icons map";
     }
+    @if $as != 'before' and $as != 'after' {
+        @error "as must be either 'before' or 'after'";
+    }
     @extend %icon;
 
-    &::before {
+    &::#{$as} {
         /* stylelint-disable-next-line function-no-unknown */
         content: map.get($icons, $icon);
     }

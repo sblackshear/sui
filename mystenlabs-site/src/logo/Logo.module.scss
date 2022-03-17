@@ -3,8 +3,15 @@
 
 .logo {
     display: flex;
-    flex-direction: row;
     align-items: center;
+
+    &.left {
+        flex-direction: row;
+    }
+
+    &.top {
+        flex-direction: column;
+    }
 }
 
 .icon {
@@ -16,7 +23,14 @@
 .txt {
     @include icons.icon(logo-txt);
 
-    margin-left: 10px;
     font-size: 20px;
-    margin-top: 3px;
+
+    .left > & {
+        margin-top: 3px;
+        margin-left: 10px;
+    }
+
+    .top > & {
+        margin-top: 8px;
+    }
 }

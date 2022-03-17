@@ -1,2 +1,128 @@
+@use '../styles/mysten-icons.scss' as icons;
+@use '../styles/values.scss';
+
 .footer {
+    padding: 0 50px;
+    margin-top: 60px;
+}
+
+.container {
+    display: grid;
+    grid-template-areas: 'l e c a';
+    gap: 20px;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 60px;
+
+    @media (max-width: 800px) {
+        grid-template-areas:
+            'l l l a'
+            'e e c c';
+        gap: 70px 10px;
+    }
+}
+
+.logo {
+    grid-area: l;
+    margin-top: -6px;
+}
+
+.ecosystem {
+    grid-area: e;
+}
+
+.company {
+    grid-area: c;
+}
+
+.logo,
+.ecosystem,
+.company {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+}
+
+.top-container {
+    grid-area: a;
+}
+
+.main {
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 25px;
+}
+
+.secondary {
+    max-width: 300px;
+    opacity: 0.6;
+    font-weight: 400;
+    font-size: 16px;
+    margin-bottom: 16px;
+}
+
+.top {
+    @include icons.icon('arrow');
+
+    color: values.$primary;
+    display: block;
+    transform: rotate(180deg);
+    font-size: 20px;
+}
+
+.social {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    font-size: 20px;
+    margin-top: 25px;
+
+    > * {
+        margin-left: 15px;
+
+        &:first-child {
+            margin-left: 0;
+        }
+    }
+}
+
+.arrow {
+    @include icons.icon(arrow, after);
+
+    display: block;
+
+    &::after {
+        display: inline-block;
+        transform: rotate(-135deg);
+        font-size: 10px;
+        margin-left: 5px;
+        margin-bottom: 3px;
+    }
+}
+
+.fb {
+    @include icons.icon('fb');
+}
+
+.twitter {
+    @include icons.icon('twitter');
+}
+
+.linkedin {
+    @include icons.icon('linkedin');
+}
+
+.github {
+    @include icons.icon('github');
+}
+
+.bottom {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 50px 0;
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.4;
 }
