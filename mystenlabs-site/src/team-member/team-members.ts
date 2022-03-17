@@ -1,9 +1,9 @@
-import adeniyiImg from '../assets/images/Adenyi-Abiodun.png';
-import allyImg from '../assets/images/Ally-Medina.png';
-import evanImg from '../assets/images/Evan-Cheng.png';
-import kohImg from '../assets/images/Koh-Kim.png';
-import samImg from '../assets/images/Sam-Blackshear.png';
-import todImg from '../assets/images/todd-fiala.png';
+import adeniyiImg from '../assets/images/people/Adenyi-Abiodun.png';
+import allyImg from '../assets/images/people/Ally-Medina.png';
+import evanImg from '../assets/images/people/Evan-Cheng.png';
+import kohImg from '../assets/images/people/Koh-Kim.png';
+import samImg from '../assets/images/people/Sam-Blackshear.png';
+import todImg from '../assets/images/people/todd-fiala.png';
 
 function makeTeamMember(
     name: string,
