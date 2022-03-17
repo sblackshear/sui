@@ -44,7 +44,7 @@ function TopNavHeader() {
                     </ol>
                     <li className={cl(st['nav-item'], st['match-logo'])}>
                         <Link to={DISCORD_LINK} external={true} variant="btn">
-                            Discord <span className={st['discord-icon']} />
+                            Join Discord <span className={st['discord-icon']} />
                         </Link>
                     </li>
                 </ol>
