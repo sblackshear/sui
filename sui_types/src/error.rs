@@ -260,6 +260,8 @@ pub enum SuiError {
     TooManyIncorrectAuthorities,
     #[error("Inconsistent results observed in the Gateway. This should not happen and typically means there is a bug in the Sui implementation. Details: {error:?}")]
     InconsistentGatewayResult { error: String },
+    #[error("Transaction data not found. Transaction digest: {digest:?}")]
+    TransactionNotFound { digest: TransactionDigest },
 }
 
 pub type SuiResult<T = ()> = Result<T, SuiError>;

@@ -7,7 +7,8 @@ use crate::{
     gas_coin::GasCoin,
     object::Object,
 };
-use std::convert::TryFrom;
+
+use super::base_types::*;
 
 macro_rules! ok_or_gas_error {
     ($cond:expr, $e:expr) => {

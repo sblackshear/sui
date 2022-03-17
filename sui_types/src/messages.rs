@@ -22,13 +22,15 @@ use name_variant::NamedVariant;
 use once_cell::sync::OnceCell;
 use serde::{Deserialize, Serialize};
 // use static_assertions::const_assert_eq;
-use std::fmt::Write;
-use std::fmt::{Display, Formatter};
-//use std::mem::size_of;
-use std::{
-    collections::{BTreeSet, HashSet},
-    hash::{Hash, Hasher},
-};
+
+use crate::crypto::{sha3_hash, AuthoritySignature, BcsSignable, Signature};
+use crate::object::{Object, ObjectFormatOptions, Owner, OBJECT_START_VERSION};
+
+//use super::{base_types::*, batch::*, committee::Committee, error::*, event::Event};
+
+#[cfg(test)]
+#[path = "unit_tests/messages_tests.rs"]
+mod messages_tests;
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Serialize, Deserialize)]
 pub struct Transfer {
@@ -68,6 +70,9 @@ pub enum TransactionKind {
     /// Call a function in a published Move module
     Call(MoveCall),
     // .. more transaction types go here
+    SplitCoin(MoveCall),
+
+    MergeCoin(MoveCall),
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Serialize, Deserialize)]
@@ -110,6 +115,54 @@ impl TransactionData {
         });
         Self::new(kind, sender, gas_payment)
     }
+    pub fn new_merge_coin_call(
+        sender: SuiAddress,
+        package: ObjectRef,
+        module: Identifier,
+        function: Identifier,
+        type_arguments: Vec<TypeTag>,
+        gas_payment: ObjectRef,
+        object_arguments: Vec<ObjectRef>,
+        shared_object_arguments: Vec<ObjectID>,
+        pure_arguments: Vec<Vec<u8>>,
+        gas_budget: u64,
+    ) -> Self {
+        let kind = TransactionKind::MergeCoin(MoveCall {
+            package,
+            module,
+            function,
+            type_arguments,
+            object_arguments,
+            shared_object_arguments,
+            pure_arguments,
+            gas_budget,
+        });
+        Self::new(kind, sender, gas_payment)
+    }
+    pub fn new_split_coin_call(
+        sender: SuiAddress,
+        package: ObjectRef,
+        module: Identifier,
+        function: Identifier,
+        type_arguments: Vec<TypeTag>,
+        gas_payment: ObjectRef,
+        object_arguments: Vec<ObjectRef>,
+        shared_object_arguments: Vec<ObjectID>,
+        pure_arguments: Vec<Vec<u8>>,
+        gas_budget: u64,
+    ) -> Self {
+        let kind = TransactionKind::SplitCoin(MoveCall {
+            package,
+            module,
+            function,
+            type_arguments,
+            object_arguments,
+            shared_object_arguments,
+            pure_arguments,
+            gas_budget,
+        });
+        Self::new(kind, sender, gas_payment)
+    }
 
     pub fn new_transfer(
         recipient: SuiAddress,
@@ -140,6 +193,18 @@ impl TransactionData {
     /// Returns the transaction kind as a &str (variant name, no fields)
     pub fn kind_as_str(&self) -> &'static str {
         self.kind.variant_name()
+    }
+
+    pub fn digest(&self) -> TransactionDigest {
+        TransactionDigest::new(sha3_hash(self))
+    }
+
+    pub fn gas(&self) -> ObjectRef {
+        self.gas_payment
+    }
+
+    pub fn signer(&self) -> SuiAddress {
+        self.sender
     }
 }
 
@@ -643,7 +708,9 @@ impl Transaction {
     pub fn contains_shared_object(&self) -> bool {
         match &self.data.kind {
             TransactionKind::Transfer(..) => false,
-            TransactionKind::Call(c) => !c.shared_object_arguments.is_empty(),
+            TransactionKind::Call(c)
+            | TransactionKind::MergeCoin(c)
+            | TransactionKind::SplitCoin(c) => !c.shared_object_arguments.is_empty(),
             TransactionKind::Publish(..) => false,
         }
     }
@@ -664,7 +731,9 @@ impl Transaction {
             TransactionKind::Transfer(t) => {
                 vec![InputObjectKind::OwnedMoveObject(t.object_ref)]
             }
-            TransactionKind::Call(c) => {
+            TransactionKind::Call(c)
+            | TransactionKind::SplitCoin(c)
+            | TransactionKind::MergeCoin(c) => {
                 let mut call_inputs = Vec::with_capacity(2 + c.object_arguments.len());
                 call_inputs.extend(
                     c.object_arguments
@@ -711,7 +780,7 @@ impl Transaction {
 
     // Derive a cryptographic hash of the transaction.
     pub fn digest(&self) -> TransactionDigest {
-        TransactionDigest::new(sha3_hash(&self.data))
+        self.data.digest()
     }
 
     pub fn input_objects_in_compiled_modules(
@@ -945,7 +1014,9 @@ impl Display for CertifiedTransaction {
                 writeln!(writer, "Transaction Kind : Publish")?;
                 writeln!(writer, "Gas Budget : {}", p.gas_budget)?;
             }
-            TransactionKind::Call(c) => {
+            TransactionKind::Call(c)
+            | TransactionKind::MergeCoin(c)
+            | TransactionKind::SplitCoin(c) => {
                 writeln!(writer, "Transaction Kind : Call")?;
                 writeln!(writer, "Gas Budget : {}", c.gas_budget)?;
                 writeln!(writer, "Package ID : {}", c.package.0.to_hex_literal())?;

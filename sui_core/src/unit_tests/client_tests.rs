@@ -476,16 +476,21 @@ async fn test_initiating_valid_transfer() {
         client.get_authorities().get_latest_owner(object_id_2).await,
         (sender, SequenceNumber::from(0))
     );
-    let (certificate, _) = client
-        .transfer_coin(
-            sender,
-            object_id_1,
-            gas_object,
-            recipient,
-            signature_callback(&sender_key),
-        )
+    let sig_req = client
+        .transfer_coin(sender, object_id_1, gas_object, recipient)
         .await
         .unwrap();
+    let signature = signer(&sender_key)
+        .sign(&sender, sig_req.data)
+        .await
+        .unwrap();
+    let (certificate, _) = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_effect_response()
+        .unwrap();
+
     let account = get_account(&client, sender);
     assert_eq!(
         account.highest_known_version(&object_id_1),
@@ -526,16 +531,22 @@ async fn test_initiating_valid_transfer_despite_bad_authority() {
     ];
     let (sender, sender_key) = get_key_pair();
     let mut client = init_local_client_and_fund_account_bad(sender, authority_objects).await;
-    let (certificate, _) = client
-        .transfer_coin(
-            sender,
-            object_id,
-            gas_object,
-            recipient,
-            signature_callback(&sender_key),
-        )
+    let sig_req = client
+        .transfer_coin(sender, object_id, gas_object, recipient)
         .await
         .unwrap();
+
+    let signature = signer(&sender_key)
+        .sign(&sender, sig_req.data)
+        .await
+        .unwrap();
+    let (certificate, _) = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_effect_response()
+        .unwrap();
+
     let account = get_account(&client, sender);
     assert_eq!(
         account.highest_known_version(&object_id),
@@ -569,16 +580,10 @@ async fn test_initiating_transfer_low_funds() {
         vec![object_id_1, object_id_2, gas_object],
         vec![object_id_1, object_id_2, gas_object],
     ];
-    let (sender, sender_key) = get_key_pair();
+    let (sender, _sender_key) = get_key_pair();
     let mut client = init_local_client_and_fund_account_bad(sender, authority_objects).await;
     assert!(client
-        .transfer_coin(
-            sender,
-            object_id_2,
-            gas_object,
-            recipient,
-            signature_callback(&sender_key),
-        )
+        .transfer_coin(sender, object_id_2, gas_object, recipient,)
         .await
         .is_err());
     let account = get_account(&client, sender);
@@ -627,15 +632,17 @@ async fn test_bidirectional_transfer() {
         (addr1, SequenceNumber::from(0))
     );
     // Transfer object to client.
-    let (certificate, _) = client
-        .transfer_coin(
-            addr1,
-            object_id,
-            gas_object1,
-            addr2,
-            signature_callback(&key1),
-        )
+    let sig_req = client
+        .transfer_coin(addr1, object_id, gas_object1, addr2)
         .await
+        .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
+    let (certificate, _) = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_effect_response()
         .unwrap();
 
     let account1 = get_account(&client, addr1);
@@ -672,14 +679,13 @@ async fn test_bidirectional_transfer() {
     );
 
     // Transfer the object back to Client1
+    let sig_req = client
+        .transfer_coin(addr2, object_id, gas_object2, addr1)
+        .await
+        .unwrap();
+    let signature = signer(&key2).sign(&addr2, sig_req.data).await.unwrap();
     client
-        .transfer_coin(
-            addr2,
-            object_id,
-            gas_object2,
-            addr1,
-            signature_callback(&key2),
-        )
+        .execute_transaction(sig_req.digest, signature)
         .await
         .unwrap();
 
@@ -706,13 +712,7 @@ async fn test_bidirectional_transfer() {
 
     // Should fail if Client 2 double spend the object
     assert!(client
-        .transfer_coin(
-            addr2,
-            object_id,
-            gas_object2,
-            addr1,
-            signature_callback(&key2),
-        )
+        .transfer_coin(addr2, object_id, gas_object2, addr1)
         .await
         .is_err());
 }
@@ -774,14 +774,14 @@ async fn test_client_state_sync_with_transferred_object() {
     fund_account(authority_clients, &mut client, addr1, authority_objects).await;
 
     // Transfer object to client.
+    let sig_req = client
+        .transfer_coin(addr1, object_id, gas_object_id, addr2)
+        .await
+        .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
     client
-        .transfer_coin(
-            addr1,
-            object_id,
-            gas_object_id,
-            addr2,
-            signature_callback(&key1),
-        )
+        .execute_transaction(sig_req.digest, signature)
         .await
         .unwrap();
 
@@ -833,7 +833,7 @@ async fn test_move_calls_object_create() {
         object_value.to_le_bytes().to_vec(),
         bcs::to_bytes(&AccountAddress::from(sender)).unwrap(),
     ];
-    let call_response = client
+    let sig_req = client
         .move_call(
             sender,
             framework_obj_ref,
@@ -845,9 +845,19 @@ async fn test_move_calls_object_create() {
             vec![],
             pure_args,
             GAS_VALUE_FOR_TESTING - 1, // Make sure budget is less than gas value
-            signature_callback(&sender_key),
         )
-        .await;
+        .await
+        .unwrap();
+
+    let signature = signer(&sender_key)
+        .sign(&sender, sig_req.data)
+        .await
+        .unwrap();
+    let call_response = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_effect_response();
 
     // Check effects are good
     let (_, transaction_effects) = call_response.unwrap();
@@ -894,7 +904,7 @@ async fn test_move_calls_object_transfer() {
         object_value.to_le_bytes().to_vec(),
         bcs::to_bytes(&AccountAddress::from(addr1)).unwrap(),
     ];
-    let call_response = client
+    let sig_req = client
         .move_call(
             addr1,
             framework_obj_ref,
@@ -906,9 +916,16 @@ async fn test_move_calls_object_transfer() {
             vec![],
             pure_args,
             GAS_VALUE_FOR_TESTING - 1, // Make sure budget is less than gas value
-            signature_callback(&key1),
         )
-        .await;
+        .await
+        .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
+    let call_response = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_effect_response();
 
     let (_, transaction_effects) = call_response.unwrap();
 
@@ -919,7 +936,7 @@ async fn test_move_calls_object_transfer() {
     gas_object_ref = client_object(&mut client, gas_object_ref.0).await.0;
 
     let pure_args = vec![bcs::to_bytes(&AccountAddress::from(addr2)).unwrap()];
-    let call_response = client
+    let sig_req = client
         .move_call(
             addr1,
             framework_obj_ref,
@@ -931,9 +948,16 @@ async fn test_move_calls_object_transfer() {
             vec![],
             pure_args,
             GAS_VALUE_FOR_TESTING / 2,
-            signature_callback(&key1),
         )
-        .await;
+        .await
+        .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
+    let call_response = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_effect_response();
 
     // Check effects are good
     let (_, transaction_effects) = call_response.unwrap();
@@ -984,7 +1008,7 @@ async fn test_move_calls_freeze_object() {
         object_value.to_le_bytes().to_vec(),
         bcs::to_bytes(&AccountAddress::from(addr1)).unwrap(),
     ];
-    let call_response = client
+    let sig_req = client
         .move_call(
             addr1,
             framework_obj_ref,
@@ -996,9 +1020,16 @@ async fn test_move_calls_freeze_object() {
             vec![],
             pure_args,
             GAS_VALUE_FOR_TESTING - 1, // Make sure budget is less than gas value
-            signature_callback(&key1),
         )
-        .await;
+        .await
+        .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
+    let call_response = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_effect_response();
 
     let (_, transaction_effects) = call_response.unwrap();
     // Get the object created from the call
@@ -1007,7 +1038,7 @@ async fn test_move_calls_freeze_object() {
     let new_obj_ref = client_object(&mut client, new_obj_ref.0).await.0;
     gas_object_ref = client_object(&mut client, gas_object_ref.0).await.0;
 
-    let call_response = client
+    let sig_req = client
         .move_call(
             addr1,
             framework_obj_ref,
@@ -1019,9 +1050,16 @@ async fn test_move_calls_freeze_object() {
             vec![],
             vec![],
             GAS_VALUE_FOR_TESTING / 2,
-            signature_callback(&key1),
         )
-        .await;
+        .await
+        .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
+    let call_response = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_effect_response();
 
     // Check effects are good
     let (_, transaction_effects) = call_response.unwrap();
@@ -1073,7 +1111,7 @@ async fn test_move_calls_object_delete() {
         object_value.to_le_bytes().to_vec(),
         bcs::to_bytes(&AccountAddress::from(addr1)).unwrap(),
     ];
-    let call_response = client
+    let sig_req = client
         .move_call(
             addr1,
             framework_obj_ref,
@@ -1085,9 +1123,16 @@ async fn test_move_calls_object_delete() {
             vec![],
             pure_args,
             GAS_VALUE_FOR_TESTING - 1, // Make sure budget is less than gas value
-            signature_callback(&key1),
         )
-        .await;
+        .await
+        .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
+    let call_response = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_effect_response();
 
     let (_, transaction_effects) = call_response.unwrap();
     // Get the object created from the call
@@ -1095,7 +1140,7 @@ async fn test_move_calls_object_delete() {
 
     gas_object_ref = client_object(&mut client, gas_object_ref.0).await.0;
 
-    let call_response = client
+    let sig_req = client
         .move_call(
             addr1,
             framework_obj_ref,
@@ -1107,9 +1152,16 @@ async fn test_move_calls_object_delete() {
             vec![],
             Vec::new(),
             GAS_VALUE_FOR_TESTING / 2,
-            signature_callback(&key1),
         )
-        .await;
+        .await
+        .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
+    let call_response = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_effect_response();
 
     // Check effects are good
     let (_, transaction_effects) = call_response.unwrap();
@@ -1157,15 +1209,22 @@ async fn test_module_publish_and_call_good() {
     hero_path.push_str("/src/unit_tests/data/hero/");
 
     let compiled_modules = build_move_package_to_bytes(Path::new(&hero_path)).unwrap();
-    let response = client
+    let sig_req = client
         .publish(
             addr1,
             compiled_modules,
             gas_object_ref,
             GAS_VALUE_FOR_TESTING / 2,
-            signature_callback(&key1),
         )
         .await
+        .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
+    let response = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_publish_response()
         .unwrap();
 
     // Two objects resulting from two initializer runs in different modules should be created.
@@ -1197,7 +1256,7 @@ async fn test_module_publish_and_call_good() {
     assert_eq!(tres_cap_obj_info.owner, gas_object.owner);
 
     //Try to call a function in TrustedCoin module
-    let call_resp = client
+    let sig_req = client
         .move_call(
             addr1,
             package,
@@ -1209,9 +1268,16 @@ async fn test_module_publish_and_call_good() {
             vec![],
             vec![42u64.to_le_bytes().to_vec()],
             1000,
-            signature_callback(&key1),
         )
         .await
+        .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
+    let call_resp = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_effect_response()
         .unwrap();
 
     let effects = call_resp.1;
@@ -1258,15 +1324,22 @@ async fn test_module_publish_file_path() {
     hero_path.push_str("/src/unit_tests/data/hero/Hero.move");
 
     let compiled_modules = build_move_package_to_bytes(Path::new(&hero_path)).unwrap();
-    let response = client
+    let sig_req = client
         .publish(
             addr1,
             compiled_modules,
             gas_object_ref,
             GAS_VALUE_FOR_TESTING / 2,
-            signature_callback(&key1),
         )
         .await
+        .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
+    let response = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_publish_response()
         .unwrap();
 
     // Even though we provided a path to Hero.move, the builder is
@@ -1302,24 +1375,22 @@ async fn test_transfer_object_error() {
 
     // Test 1: Double spend
     let object_id = *objects.next().unwrap();
-    client
-        .transfer_coin(
-            sender,
-            object_id,
-            gas_object,
-            recipient,
-            signature_callback(&sender_key),
-        )
+    let sig_req = client
+        .transfer_coin(sender, object_id, gas_object, recipient)
         .await
         .unwrap();
+
+    let signature = signer(&sender_key)
+        .sign(&sender, sig_req.data)
+        .await
+        .unwrap();
+    client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap();
+
     let result = client
-        .transfer_coin(
-            sender,
-            object_id,
-            gas_object,
-            recipient,
-            signature_callback(&sender_key),
-        )
+        .transfer_coin(sender, object_id, gas_object, recipient)
         .await;
 
     assert!(result.is_err());
@@ -1337,13 +1408,7 @@ async fn test_transfer_object_error() {
         .unwrap();
 
     let result = client
-        .transfer_coin(
-            sender,
-            obj.id(),
-            gas_object,
-            recipient,
-            signature_callback(&sender_key),
-        )
+        .transfer_coin(sender, obj.id(), gas_object, recipient)
         .await;
     assert!(result.is_err());
 
@@ -1360,15 +1425,16 @@ async fn test_transfer_object_error() {
         )
         .unwrap();
 
-    let result = client
-        .transfer_coin(
-            sender,
-            object_id,
-            gas_object,
-            recipient,
-            signature_callback(&sender_key),
-        )
-        .await;
+    let sig_req = client
+        .transfer_coin(sender, object_id, gas_object, recipient)
+        .await
+        .unwrap();
+    let signature = signer(&sender_key)
+        .sign(&sender, sig_req.data)
+        .await
+        .unwrap();
+    let result = client.execute_transaction(sig_req.digest, signature).await;
+
     assert!(result.is_err());
 
     // Test 4: Used to detect a mismatch between the object reference in `object_refs`, on the one hand, and
@@ -1390,15 +1456,17 @@ async fn test_transfer_object_error() {
         ))
         .unwrap();
 
-    let result = client
-        .transfer_coin(
-            sender,
-            object_id,
-            gas_object,
-            recipient,
-            signature_callback(&sender_key),
-        )
-        .await;
+    let sig_req = client
+        .transfer_coin(sender, object_id, gas_object, recipient)
+        .await
+        .unwrap();
+
+    let signature = signer(&sender_key)
+        .sign(&sender, sig_req.data)
+        .await
+        .unwrap();
+    let result = client.execute_transaction(sig_req.digest, signature).await;
+
     assert!(result.is_err());
 }
 
@@ -1491,15 +1559,22 @@ async fn test_object_store() {
     hero_path.push_str("/src/unit_tests/data/hero/");
 
     let compiled_modules = build_move_package_to_bytes(Path::new(&hero_path)).unwrap();
-    let response = client
+    let sig_req = client
         .publish(
             addr1,
             compiled_modules,
             gas_object_ref,
             GAS_VALUE_FOR_TESTING / 2,
-            signature_callback(&key1),
         )
         .await
+        .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
+    let response = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_publish_response()
         .unwrap();
 
     // Two objects resulting from two
@@ -1577,14 +1652,14 @@ async fn test_object_store_transfer() {
     );
 
     // Transfer object to client.
+    let sig_req = client
+        .transfer_coin(addr1, object_id, gas_object1, addr2)
+        .await
+        .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
     let _certificate = client
-        .transfer_coin(
-            addr1,
-            object_id,
-            gas_object1,
-            addr2,
-            signature_callback(&key1),
-        )
+        .execute_transaction(sig_req.digest, signature)
         .await
         .unwrap();
 
@@ -1604,14 +1679,14 @@ async fn test_object_store_transfer() {
     );
 
     // Transfer the object back to Client1
+    let sig_req = client
+        .transfer_coin(addr2, object_id, gas_object2, addr1)
+        .await
+        .unwrap();
+
+    let signature = signer(&key2).sign(&addr2, sig_req.data).await.unwrap();
     let _certificate = client
-        .transfer_coin(
-            addr2,
-            object_id,
-            gas_object2,
-            addr1,
-            signature_callback(&key2),
-        )
+        .execute_transaction(sig_req.digest, signature)
         .await
         .unwrap();
 
@@ -2185,16 +2260,20 @@ async fn test_transfer_pending_transactions() {
 
     // Test 1: Normal transfer
     let object_id = *objects.next().unwrap();
-    client
-        .transfer_coin(
-            sender,
-            object_id,
-            gas_object,
-            recipient,
-            signature_callback(&sender_key),
-        )
+    let sig_req = client
+        .transfer_coin(sender, object_id, gas_object, recipient)
         .await
         .unwrap();
+
+    let signature = signer(&sender_key)
+        .sign(&sender, sig_req.data)
+        .await
+        .unwrap();
+    client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap();
+
     // Pending transaction should be cleared
     assert!(get_account(&client, sender)
         .store()
@@ -2210,13 +2289,7 @@ async fn test_transfer_pending_transactions() {
         .unwrap();
 
     let result = client
-        .transfer_coin(
-            sender,
-            obj.id(),
-            gas_object,
-            recipient,
-            signature_callback(&sender_key),
-        )
+        .transfer_coin(sender, obj.id(), gas_object, recipient)
         .await;
     assert!(result.is_err());
     // assert!(matches!(result.unwrap_err().downcast_ref(),
@@ -2240,15 +2313,15 @@ async fn test_transfer_pending_transactions() {
         )
         .unwrap();
 
-    let result = client
-        .transfer_coin(
-            sender,
-            object_id,
-            gas_object,
-            recipient,
-            signature_callback(&sender_key),
-        )
-        .await;
+    let sig_req = client
+        .transfer_coin(sender, object_id, gas_object, recipient)
+        .await
+        .unwrap();
+    let signature = signer(&sender_key)
+        .sign(&sender, sig_req.data)
+        .await
+        .unwrap();
+    let result = client.execute_transaction(sig_req.digest, signature).await;
     assert!(result.is_err());
     //assert!(matches!(result.unwrap_err().downcast_ref(),
     //        Some(SuiError::QuorumNotReached {errors, ..}) if matches!(errors.as_slice(), [SuiError::LockErrors{..}, ..])));
@@ -2274,15 +2347,17 @@ async fn test_transfer_pending_transactions() {
         ))
         .unwrap();
     // Try to use those objects in another transaction
-    let result = client
-        .transfer_coin(
-            sender,
-            object_id,
-            gas_object,
-            recipient,
-            signature_callback(&sender_key),
-        )
-        .await;
+    let sig_req = client
+        .transfer_coin(sender, object_id, gas_object, recipient)
+        .await
+        .unwrap();
+
+    let signature = signer(&sender_key)
+        .sign(&sender, sig_req.data)
+        .await
+        .unwrap();
+    let result = client.execute_transaction(sig_req.digest, signature).await;
+
     assert!(result.is_err());
     assert!(matches!(
         result.unwrap_err().downcast_ref(),
@@ -2349,7 +2424,7 @@ async fn test_address_manager() {
         bcs::to_bytes(&100u64).unwrap(),
         bcs::to_bytes(&AccountAddress::from(address)).unwrap(),
     ];
-    let call_response = address_manager
+    let sig_req = address_manager
         .move_call(
             address,
             framework_obj_ref,
@@ -2361,9 +2436,16 @@ async fn test_address_manager() {
             vec![],
             pure_args,
             GAS_VALUE_FOR_TESTING - 1, // Make sure budget is less than gas value
-            signature_callback(&secret),
         )
-        .await;
+        .await
+        .unwrap();
+
+    let signature = signer(&secret).sign(&address, sig_req.data).await.unwrap();
+    let call_response = address_manager
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_effect_response();
 
     // Check effects are good
     let (_, transaction_effects) = call_response.unwrap();
@@ -2406,17 +2488,25 @@ async fn test_coin_split() {
     let split_amounts = vec![100, 200, 300, 400, 500];
     let total_amount: u64 = split_amounts.iter().sum();
 
-    let response = client
+    let sig_req = client
         .split_coin(
             addr1,
             coin_object.id(),
             split_amounts.clone(),
             gas_object.id(),
             GAS_VALUE_FOR_TESTING,
-            signature_callback(&key1),
         )
         .await
         .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
+    let response = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_split_coin_response()
+        .unwrap();
+
     assert_eq!(
         (coin_object_id, coin_object.version().increment()),
         (response.updated_coin.id(), response.updated_coin.version())
@@ -2463,17 +2553,25 @@ async fn test_coin_merge() {
     let coin_object2 = objects.get(&coin_object_id2).unwrap();
     let gas_object = objects.get(&gas_object_id).unwrap();
 
-    let response = client
+    let sig_req = client
         .merge_coins(
             addr1,
             coin_object1.id(),
             coin_object2.id(),
             gas_object.id(),
             GAS_VALUE_FOR_TESTING,
-            signature_callback(&key1),
         )
         .await
         .unwrap();
+
+    let signature = signer(&key1).sign(&addr1, sig_req.data).await.unwrap();
+    let response = client
+        .execute_transaction(sig_req.digest, signature)
+        .await
+        .unwrap()
+        .to_merge_coin_response()
+        .unwrap();
+
     assert_eq!(
         (coin_object_id1, coin_object1.version().increment()),
         (response.updated_coin.id(), response.updated_coin.version())
@@ -2491,7 +2589,7 @@ fn to_transaction(data: TransactionData, signer: &dyn Signer<Signature>) -> Tran
     Transaction::new(data, signature)
 }
 
-fn signature_callback(signer: &KeyPair) -> StableSyncTransactionSigner {
+fn signer(signer: &KeyPair) -> StableSyncTransactionSigner {
     struct Callback {
         keypair: KeyPair,
     }

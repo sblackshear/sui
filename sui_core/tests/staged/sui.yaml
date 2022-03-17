@@ -700,6 +700,11 @@ SuiError:
       InconsistentGatewayResult:
         STRUCT:
           - error: STR
+    88:
+      TransactionNotFound:
+        STRUCT:
+          - digest:
+              TYPENAME: TransactionDigest
 Transaction:
   STRUCT:
     - data:
@@ -801,6 +806,14 @@ TransactionKind:
           TYPENAME: MoveModulePublish
     2:
       Call:
+        NEWTYPE:
+          TYPENAME: MoveCall
+    3:
+      SplitCoin:
+        NEWTYPE:
+          TYPENAME: MoveCall
+    4:
+      MergeCoin:
         NEWTYPE:
           TYPENAME: MoveCall
 Transfer:

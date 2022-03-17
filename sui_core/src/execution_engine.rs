@@ -30,7 +30,9 @@ pub fn execute_transaction<S: BackingPackageStore>(
         TransactionKind::Transfer(t) => {
             transfer(temporary_store, inputs, t.recipient, gas_object.clone())
         }
-        TransactionKind::Call(c) => {
+        TransactionKind::Call(c)
+        | TransactionKind::MergeCoin(c)
+        | TransactionKind::SplitCoin(c) => {
             // unwraps here are safe because we built `inputs`
             let package = inputs.pop().unwrap();
             adapter::execute(
