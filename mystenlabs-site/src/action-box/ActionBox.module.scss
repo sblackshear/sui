@@ -1,0 +1,84 @@
+@use '../styles/values.scss';
+
+.container {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    padding: 150px 200px;
+    border-radius: values.$section-border-radius;
+    background-color: values.$section-primary-bg;
+    color: values.$section-primary-color;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 60px;
+
+    > * {
+        z-index: 2;
+    }
+}
+
+.title {
+    text-align: center;
+    font-weight: 600;
+    font-size: 70px;
+    margin: 0;
+}
+
+.description {
+    text-align: center;
+    margin: 30px 0;
+    font-weight: 400;
+    font-size: 18px;
+    color: values.$section-primary-alt-color;
+}
+
+.cube-1,
+.cube-2 {
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+.cube-1 {
+    left: 0;
+    bottom: 0;
+    width: 40%;
+    height: 60%;
+    background-image: url('../assets/images/cube-left-1.png');
+    background-position-y: bottom;
+}
+
+.cube-2 {
+    right: 0;
+    top: 5%;
+    width: 24%;
+    height: 60%;
+    background-image: url('../assets/images/cube-right-1.png');
+    background-position: right top;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 200px 50px;
+    }
+
+    .cube-1 {
+        left: 50%;
+        bottom: 0;
+        width: 55%;
+        height: 35%;
+        background-image: url('../assets/images/cube-button-1.png');
+        background-position: left bottom;
+    }
+
+    .cube-2 {
+        right: unset;
+        top: 0;
+        left: 5%;
+        width: 80%;
+        height: 50%;
+        background-image: url('../assets/images/cube-top-1.png');
+        background-position: left top;
+    }
+}

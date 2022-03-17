@@ -1,6 +1,7 @@
 import cl from 'classnames';
 import Head from 'next/head';
 
+import ActionBox from '../action-box/ActionBox';
 import Footer from '../footer/Footer';
 import InvestorBadge from '../investor-badge/InvestorBadge';
 import { allInvestors } from '../investor-badge/investors';
@@ -145,6 +146,7 @@ const Home: NextPage = () => {
                 >
                     <LatestNews />
                 </Section>
+                <ActionBox />
             </main>
             <Footer />
         </div>
