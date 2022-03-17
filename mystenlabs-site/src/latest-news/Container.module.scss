@@ -1,0 +1,42 @@
+.container {
+    display: grid;
+    grid-template-areas:
+        'a l'
+        'a l'
+        'a l'
+        'a l'
+        's l';
+    column-gap: 100px;
+    padding: 40px;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.primary {
+    grid-area: a;
+    margin-bottom: 45px;
+    max-width: 40vw;
+}
+
+.subscribe {
+    grid-area: s;
+}
+
+.articles {
+    grid-area: l;
+    max-height: 620px;
+    overflow-y: auto;
+}
+
+@media (max-width: 800px) {
+    .container {
+        grid-template-areas:
+            'a'
+            'l'
+            's';
+    }
+
+    .primary {
+        max-width: none;
+    }
+}

@@ -14,6 +14,7 @@ export type LinkProps = {
     variant?: ButtonProps['variant'];
     btnStyle?: ButtonProps['btnStyle'];
     disabled?: boolean;
+    className?: string;
 };
 
 function Link({
@@ -24,6 +25,7 @@ function Link({
     variant = 'link',
     btnStyle,
     disabled = false,
+    className,
 }: LinkProps) {
     const target = external ? '_blank' : undefined;
     const link = (
@@ -34,6 +36,7 @@ function Link({
             rel="no-referrer"
             disabled={disabled}
             btnStyle={btnStyle}
+            className={className}
         >
             {label || children}
         </Button>

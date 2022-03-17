@@ -1,0 +1,33 @@
+@use '../../styles/values.scss';
+@use '../../styles/mysten-icons.scss' as icons;
+
+.container {
+    background-color: values.$primary;
+    padding: 20px 30px 20px 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+.title {
+    margin: 0;
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.description {
+    font-weight: 400;
+    font-size: 16px;
+    opacity: 0.6;
+}
+
+.icon {
+    @include icons.icon(arrow);
+
+    transform: rotate(-135deg);
+    transform-origin: left;
+    position: absolute;
+    right: -6px;
+    top: 14px;
+    font-size: 21px;
+}

@@ -4,6 +4,7 @@ import Head from 'next/head';
 import Footer from '../footer/Footer';
 import InvestorBadge from '../investor-badge/InvestorBadge';
 import { allInvestors } from '../investor-badge/investors';
+import LatestNews from '../latest-news/Container';
 import Link from '../link/Link';
 import PageHeadline from '../page-headline/PageHeadline';
 import ProductCard from '../product-card/ProductCard';
@@ -134,6 +135,15 @@ const Home: NextPage = () => {
                             <InvestorBadge key={i.href} {...i} />
                         ))}
                     </div>
+                </Section>
+                <Section
+                    id="community"
+                    label="Community"
+                    title="Latest news"
+                    description="Stay informed on Mysten Labs and our recent developments"
+                    variant="transparent"
+                >
+                    <LatestNews />
                 </Section>
             </main>
             <Footer />
