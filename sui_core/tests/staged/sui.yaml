@@ -739,6 +739,12 @@ SuiError:
           - error: STR
     89:
       OnlyOneConsensusClientPermitted: UNIT
+    88:
+    89:
+      TransactionNotFound:
+        STRUCT:
+          - digest:
+              TYPENAME: TransactionDigest
 Transaction:
   STRUCT:
     - data:
