@@ -12,6 +12,7 @@ import ProductCard from '../product-card/ProductCard';
 import Section from '../section/Section';
 import TeamMembersSection from '../team-members/TeamMembersSection';
 import TopNavHeader from '../top-nav-header/TopNavHeader';
+import TypingWords from '../typing-words/TypingWords';
 
 import type { NextPage } from 'next';
 
@@ -19,6 +20,14 @@ import st from '../styles/pages/Home.module.scss';
 
 const HIGHLIGHTED_INVESTORS = allInvestors.filter((i) => i.highlight);
 const REST_INVESTORS = allInvestors.filter((i) => !i.highlight);
+const WORDS = [
+    'developers',
+    'designers',
+    'marketers',
+    'connectors',
+    'engineers',
+    'economists',
+];
 
 const Home: NextPage = () => {
     const nextSectionHref = '/#ecosystem';
@@ -43,8 +52,9 @@ const Home: NextPage = () => {
                     nextSectionHrefExternal={nextSectionHrefExternal}
                 >
                     <div>
-                        We are devel| bringing digital asset ownership to
-                        billions of people.
+                        We are{' '}
+                        <TypingWords words={WORDS} className="color-primary" />{' '}
+                        bringing digital asset ownership to billions of people.
                     </div>
                     <Link
                         variant="btn"

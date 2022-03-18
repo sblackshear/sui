@@ -1,0 +1,25 @@
+@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.container {
+    &::after {
+        content: '|';
+        margin-left: 5px;
+        animation: blink 1s ease-in-out infinite;
+    }
+}
