@@ -1,6 +1,5 @@
 import cl from 'classnames';
 
-import Button from '../button/Button';
 import Link from '../link/Link';
 import Logo from '../logo/Logo';
 
@@ -12,7 +11,7 @@ function makeLink(label: string, to: string, external: boolean = true) {
 
 const LINKS = [
     makeLink('Ecosystem', '/#ecosystem', false),
-    makeLink('About Us', '/#about-us', false),
+    makeLink('About Us', '/about-us', false),
     makeLink('Community', '/#community', false),
     makeLink('Careers', 'https://jobs.lever.co/mystenlabs'),
 ];

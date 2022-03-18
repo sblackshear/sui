@@ -56,7 +56,7 @@ const Home: NextPage = () => {
                     <Link
                         variant="btn"
                         btnStyle="secondary"
-                        to="/#about-us"
+                        to="/about-us"
                         external={false}
                     >
                         About Us

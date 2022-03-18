@@ -23,7 +23,7 @@ function TeamMembersSection({
     const showLink = forceLink || (limit != null && teamMembers.length > limit);
     return (
         <Section
-            id="about-us"
+            id="team"
             label={showLink ? 'About us' : 'Who we are'}
             title="Meet the team"
             description="We are a team of veteran innovators, storytellers and developers on a mission to bring true digital ownership to the masses."
@@ -37,7 +37,7 @@ function TeamMembersSection({
             {showLink ? (
                 <div className={st['team-actions']}>
                     <Link
-                        to="/about-us"
+                        to="/about-us#team"
                         variant="btn"
                         btnStyle="secondary"
                         external={false}

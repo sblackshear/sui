@@ -70,7 +70,7 @@ function Footer() {
                     <div className={st.main}>Company</div>
                     <Link
                         external={false}
-                        to="/#about-us"
+                        to="/about-us"
                         variant="link"
                         className={st.secondary}
                     >
@@ -86,16 +86,15 @@ function Footer() {
                     </Link>
                     <Link
                         external={false}
-                        to="/terms"
+                        to="/legal?content=terms"
                         variant="link"
                         className={st.secondary}
                     >
                         Terms of Service
                     </Link>
-                    {/* TODO: link to policy */}
                     <Link
                         external={false}
-                        to="/terms"
+                        to="/legal?content=privacy"
                         variant="link"
                         className={st.secondary}
                     >
@@ -110,7 +109,7 @@ function Footer() {
             </div>
             <div className={st.bottom}>
                 <span>© 2022. Mysten Labs. All Rights Reserved.</span>
-                <Link to="/terms" external={false} variant="link">
+                <Link to="/legal?content=terms" external={false} variant="link">
                     Term &amp; Conditions
                 </Link>
             </div>
