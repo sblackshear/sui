@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react';
+import cl from 'classnames';
 
 import Link from '../link/Link';
 import Section from '../section/Section';
@@ -29,7 +30,7 @@ function TeamMembersSection({
             description="We are a team of veteran innovators, storytellers and developers on a mission to bring true digital ownership to the masses."
             variant="transparent"
         >
-            <div className="grid col-4 gap-row-big">
+            <div className={cl('grid col-4 gap-row-big', st.people)}>
                 {team.map((aMember) => (
                     <TeamMember {...aMember} key={aMember.name} />
                 ))}

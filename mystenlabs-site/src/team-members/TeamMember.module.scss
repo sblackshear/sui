@@ -2,7 +2,6 @@
 @use '../styles/mysten-icons.scss' as icons;
 
 .container {
-    width: 25vw;
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
@@ -69,10 +68,6 @@
 
 // this needs to be the same with grid break point
 @media (max-width: 800px) {
-    .container {
-        width: 50vw;
-    }
-
     .img-container {
         height: 40vh;
         max-height: 367px;
