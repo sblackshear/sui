@@ -1,4 +1,6 @@
 import cl from 'classnames';
+import { useRouter } from 'next/router';
+import { stringifyUrl } from 'query-string';
 
 import Link from '../link/Link';
 import Logo from '../logo/Logo';
@@ -18,12 +20,14 @@ const SUI_LINK = '';
 const MOVE_LINK = '';
 
 function Footer() {
+    const { pathname, query } = useRouter();
+    const topLink = stringifyUrl({ url: pathname, query });
     return (
         <footer className={st.footer}>
             <div className={st.container}>
                 <div className={st['logo']}>
                     <div className={st.main}>
-                        <Logo variant="top" />
+                        <Logo layout="top" />
                     </div>
                     <div className={st.secondary}>
                         Connecting the brightest minds to solve foundational
@@ -99,7 +103,7 @@ function Footer() {
                     </Link>
                 </div>
                 <div className={st['top-container']}>
-                    <Link external={false} variant="linkPlain" to="/">
+                    <Link external={false} variant="linkPlain" to={topLink}>
                         <span className={st['top']} />
                     </Link>
                 </div>

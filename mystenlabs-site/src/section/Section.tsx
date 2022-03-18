@@ -1,5 +1,5 @@
 import cl from 'classnames';
-import { memo } from 'react';
+import { Children, memo, useMemo } from 'react';
 
 import type { ReactNode } from 'react';
 
@@ -12,6 +12,7 @@ export type SectionProps = {
     description?: string;
     children: ReactNode | ReactNode[];
     variant?: 'primary' | 'secondary' | 'transparent';
+    layout?: 'split' | 'stack';
 };
 
 function Section({
@@ -21,15 +22,38 @@ function Section({
     description,
     children,
     variant = 'primary',
+    layout = 'stack',
 }: SectionProps) {
-    return (
-        <section id={id} className={cl(st.section, st[variant])}>
+    const info = (
+        <>
             <h6 className={st.label}>{label}</h6>
             <h3 className={st.title}>{title}</h3>
             {description ? (
                 <div className={st.description}>{description}</div>
             ) : null}
-            <div className={st.content}>{children}</div>
+        </>
+    );
+    const isSplit = layout === 'split';
+    const [item1, restItems] = useMemo(() => {
+        const [first, ...rest] = Children.toArray(children);
+        return [first, rest];
+    }, [children]);
+    if (isSplit && restItems.length === 0) {
+        throw Error(
+            'At least 2 child elements are expected when layout is split'
+        );
+    }
+    return (
+        <section id={id} className={cl(st.section, st[variant], st[layout])}>
+            {isSplit ? (
+                <div className={st.info}>
+                    {info}
+                    {item1}
+                </div>
+            ) : (
+                info
+            )}
+            <div className={st.content}>{isSplit ? restItems : children}</div>
         </section>
     );
 }

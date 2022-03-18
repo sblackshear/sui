@@ -1,12 +1,35 @@
 @use '../styles/values.scss';
 
+.content {
+    width: 100%;
+    margin-top: 45px;
+}
+
 .section {
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
     margin-top: 30px;
     padding: 90px 50px;
     border-radius: values.$section-border-radius;
+
+    &.stack {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+    }
+
+    &.split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-content: center;
+        gap: 20px;
+
+        .content {
+            margin-top: 0;
+        }
+
+        @media (max-width: 800px) {
+            grid-template-columns: 1fr;
+        }
+    }
 }
 
 .label,
@@ -34,16 +57,11 @@
     margin-top: 19px;
 }
 
-.content {
-    width: 100%;
-    margin-top: 45px;
-}
-
 .primary {
     background-color: values.$section-primary-bg;
     color: values.$section-primary-color;
 
-    > .description {
+    .description {
         color: values.$section-primary-alt-color;
     }
 }
@@ -52,7 +70,7 @@
     background-color: values.$section-secondary-bg;
     color: values.$section-secondary-color;
 
-    > .description {
+    .description {
         color: values.$section-secondary-alt-color;
     }
 }
@@ -65,7 +83,23 @@
     margin-left: -2rem; // padding of page container
     margin-right: -2rem;
 
-    > .description {
+    .description {
         color: values.$section-transparent-alt-color;
+    }
+}
+
+.info {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+
+    > :last-child {
+        margin-top: 25px;
+    }
+
+    .label,
+    .title,
+    .description {
+        text-align: initial;
     }
 }

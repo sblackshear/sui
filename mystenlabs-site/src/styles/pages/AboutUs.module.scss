@@ -1,0 +1,26 @@
+@use '../values.scss';
+
+.title,
+.description {
+    font-size: 14px;
+    font-weight: 400px;
+}
+
+.title {
+    margin-bottom: 5px;
+}
+
+.description {
+    color: values.$off-white;
+    margin-bottom: 30px;
+}
+
+.img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(128.07deg, #d40551 -43.77%, #ffd8e6 157.8%);
+    height: 30vh;
+    min-height: 500px;
+    font-size: 100px;
+}

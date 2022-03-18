@@ -77,3 +77,22 @@ a {
         flex-direction: column;
     }
 }
+
+.page-container {
+    padding: 0 2rem;
+}
+
+.page-main {
+    min-height: calc(
+        100vh - (values.$header-height + values.$header-total-vertical-margin)
+    );
+    padding: values.$main-top-padding 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.color-primary {
+    color: values.$primary;
+}

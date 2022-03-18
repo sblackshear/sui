@@ -3,8 +3,8 @@ import allyImg from '../assets/images/people/Ally-Medina.png';
 import evanImg from '../assets/images/people/Evan-Cheng.png';
 import kohImg from '../assets/images/people/Koh-Kim.png';
 import samImg from '../assets/images/people/Sam-Blackshear.png';
-import todImg from '../assets/images/people/todd-fiala.png';
 import georgeImg from '../assets/images/people/george-danezis.png';
+import todImg from '../assets/images/people/todd-fiala.png';
 
 function makeTeamMember(
     name: string,

@@ -3,14 +3,17 @@ import cl from 'classnames';
 import st from './Logo.module.scss';
 
 export type LogoProps = {
-    variant?: 'left' | 'top';
+    layout?: 'left' | 'top';
+    variant?: 'full' | 'icon';
+    size?: 'normal' | 'huge';
 };
 
-function Logo({ variant = 'left' }: LogoProps) {
+function Logo({ layout = 'left', variant, size = 'normal' }: LogoProps) {
+    const showTxt = variant === 'full';
     return (
-        <div className={cl(st.logo, st[variant])}>
+        <div className={cl(st.logo, st[layout], st[size])}>
             <span className={st['icon']} />
-            <span className={st['txt']} />
+            {showTxt ? <span className={st['txt']} /> : null}
         </div>
     );
 }

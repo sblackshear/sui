@@ -10,15 +10,13 @@ import Link from '../link/Link';
 import PageHeadline from '../page-headline/PageHeadline';
 import ProductCard from '../product-card/ProductCard';
 import Section from '../section/Section';
-import TeamMember from '../team-member/TeamMember';
-import { teamMembers as allTeam } from '../team-member/team-members';
+import TeamMembersSection from '../team-members/TeamMembersSection';
 import TopNavHeader from '../top-nav-header/TopNavHeader';
 
 import type { NextPage } from 'next';
 
-import st from '../styles/Home.module.scss';
+import st from '../styles/pages/Home.module.scss';
 
-const TEAM_MEMBERS = allTeam.slice(0, 8);
 const HIGHLIGHTED_INVESTORS = allInvestors.filter((i) => i.highlight);
 const REST_INVESTORS = allInvestors.filter((i) => !i.highlight);
 
@@ -26,7 +24,7 @@ const Home: NextPage = () => {
     const nextSectionHref = '/#ecosystem';
     const nextSectionHrefExternal = false;
     return (
-        <div className={st.container}>
+        <div className="page-container">
             <Head>
                 <title>
                     MystenLabs - Creating Foundational Infrastructure For Web3.0
@@ -39,7 +37,7 @@ const Home: NextPage = () => {
             </Head>
 
             <TopNavHeader />
-            <main className={st.main}>
+            <main className="page-main">
                 <PageHeadline
                     nextSectionHref={nextSectionHref}
                     nextSectionHrefExternal={nextSectionHrefExternal}
@@ -89,29 +87,7 @@ const Home: NextPage = () => {
                         />
                     </div>
                 </Section>
-                <Section
-                    id="about-us"
-                    label="About us"
-                    title="Meet the team"
-                    description="We are a team of veteran innovators, storytellers and developers on a mission to bring true digital ownership to the masses."
-                    variant="transparent"
-                >
-                    <div className="grid col-4 gap-row-big">
-                        {TEAM_MEMBERS.map((aMember) => (
-                            <TeamMember {...aMember} key={aMember.name} />
-                        ))}
-                    </div>
-                    <div className={st['team-actions']}>
-                        <Link
-                            to="/about-us"
-                            variant="btn"
-                            btnStyle="secondary"
-                            external={false}
-                        >
-                            View full team
-                        </Link>
-                    </div>
-                </Section>
+                <TeamMembersSection limit={8} forceLink={true} />
                 <Section
                     id="investors"
                     label="Investors"

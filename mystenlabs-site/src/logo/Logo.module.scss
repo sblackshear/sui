@@ -17,13 +17,25 @@
 .icon {
     @include icons.icon(logo);
 
-    font-size: 20px;
+    .normal > & {
+        font-size: 20px;
+    }
+
+    .huge > & {
+        font-size: 100px;
+    }
 }
 
 .txt {
     @include icons.icon(logo-txt);
 
-    font-size: 20px;
+    .normal > & {
+        font-size: 20px;
+    }
+
+    .huge > & {
+        font-size: 100px;
+    }
 
     .left > & {
         margin-top: 3px;
