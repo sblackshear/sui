@@ -3,34 +3,37 @@
 // SPDX-License-Identifier: Apache-2.0
 #![allow(clippy::same_item_push)] // get_key_pair returns random elements
 
-use super::*;
-use crate::authority::{AuthorityState, AuthorityStore};
-use crate::gateway_state::gateway_store::AccountStore;
-use crate::gateway_state::{
-    AccountState, AsyncTransactionSigner, GatewayAPI, GatewayState, StableSyncTransactionSigner,
-};
-use async_trait::async_trait;
-use futures::lock::Mutex;
-use move_core_types::{account_address::AccountAddress, ident_str, identifier::Identifier};
+use std::env;
+use std::fs;
+use std::path::Path;
 use std::{
     collections::{BTreeMap, HashMap},
     convert::TryInto,
     sync::Arc,
 };
+
+use async_trait::async_trait;
+use futures::lock::Mutex;
+use move_core_types::{account_address::AccountAddress, ident_str, identifier::Identifier};
+use signature::{Error, Signer};
+use typed_store::Map;
+
 use sui_adapter::genesis;
 use sui_framework::build_move_package_to_bytes;
 use sui_types::crypto::Signature;
 use sui_types::crypto::{get_key_pair, KeyPair};
-use sui_types::gas_coin::GasCoin;
-use sui_types::object::{Data, Object, Owner, GAS_VALUE_FOR_TESTING};
-use typed_store::Map;
-
-use signature::{Error, Signer};
-use std::env;
-use std::fs;
-use std::path::Path;
 use sui_types::error::SuiError::ObjectNotFound;
+use sui_types::gas_coin::GasCoin;
 use sui_types::messages::Transaction;
+use sui_types::object::{Data, Object, Owner, GAS_VALUE_FOR_TESTING};
+
+use crate::authority::{AuthorityState, AuthorityStore};
+use crate::gateway_state::gateway_store::AccountStore;
+use crate::gateway_state::{
+    AccountState, AsyncTransactionSigner, GatewayAPI, GatewayState, StableSyncTransactionSigner,
+};
+
+use super::*;
 
 // Only relevant in a ser/de context : the `CertifiedTransaction` for a transaction is not unique
 fn compare_certified_transactions(o1: &CertifiedTransaction, o2: &CertifiedTransaction) {
@@ -580,12 +583,19 @@ async fn test_initiating_transfer_low_funds() {
         vec![object_id_1, object_id_2, gas_object],
         vec![object_id_1, object_id_2, gas_object],
     ];
-    let (sender, _sender_key) = get_key_pair();
+    let (sender, sender_key) = get_key_pair();
     let mut client = init_local_client_and_fund_account_bad(sender, authority_objects).await;
-    assert!(client
-        .transfer_coin(sender, object_id_2, gas_object, recipient,)
-        .await
-        .is_err());
+
+    let transfer = async {
+        let sig_req = client
+            .transfer_coin(sender, object_id_2, gas_object, recipient)
+            .await?;
+        let signature = signer(&sender_key).sign(&sender, sig_req.data).await?;
+        client.execute_transaction(sig_req.digest, signature).await
+    }
+    .await;
+
+    assert!(transfer.is_err());
     let account = get_account(&client, sender);
     // Trying to overspend does not block an account.
     assert_eq!(
