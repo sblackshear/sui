@@ -40,6 +40,9 @@ function TopNavHeader() {
             ) {
                 // menu is open and refs ready
                 const { target } = e;
+                const isMenuBtn =
+                    target === btnRef.current ||
+                    btnRef.current.contains(target as Node);
                 // TODO: there is a case that menu is open then rotate/make screen wider
                 // menu element is not visible but clicking on links outside will 'close' the invisible
                 // menu and stop the action. Rare but needs fixing
@@ -48,10 +51,7 @@ function TopNavHeader() {
                     setMenuOpen(false);
                     e.preventDefault();
                     e.stopPropagation();
-                } else if (
-                    target !== btnRef.current &&
-                    target !== menuBgRef.current
-                ) {
+                } else if (!isMenuBtn && target !== menuBgRef.current) {
                     // probably clicked a link or something in the header close menu
                     // but allow propagation
                     setMenuOpen(false);
