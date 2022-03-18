@@ -8,7 +8,11 @@ export type LogoProps = {
     size?: 'normal' | 'huge';
 };
 
-function Logo({ layout = 'left', variant, size = 'normal' }: LogoProps) {
+function Logo({
+    layout = 'left',
+    variant = 'full',
+    size = 'normal',
+}: LogoProps) {
     const showTxt = variant === 'full';
     return (
         <div className={cl(st.logo, st[layout], st[size])}>
