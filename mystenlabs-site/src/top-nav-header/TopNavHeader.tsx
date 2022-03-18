@@ -1,6 +1,6 @@
 import { Overlay } from '@restart/ui';
 import cl from 'classnames';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Button from '../button/Button';
 import Link from '../link/Link';
@@ -26,8 +26,44 @@ function TopNavHeader() {
     const onHandleMenuClick = useCallback(() => {
         setMenuOpen((state) => !state);
     }, []);
-    const targetRef = useRef(null);
-    const containerRef = useRef(null);
+    const btnRef = useRef<HTMLElement>(null);
+    const menuBgRef = useRef<HTMLDivElement>(null);
+    const targetRef = useRef<HTMLElement>(null);
+    const containerRef = useRef<HTMLElement>(null);
+    useEffect(() => {
+        const fn = (e: MouseEvent) => {
+            if (
+                isMenuOpen &&
+                containerRef.current &&
+                menuBgRef.current &&
+                btnRef.current
+            ) {
+                // menu is open and refs ready
+                const { target } = e;
+                // TODO: there is a case that menu is open then rotate/make screen wider
+                // menu element is not visible but clicking on links outside will 'close' the invisible
+                // menu and stop the action. Rare but needs fixing
+                if (!containerRef.current.contains(target as Node)) {
+                    // clicked outside header
+                    setMenuOpen(false);
+                    e.preventDefault();
+                    e.stopPropagation();
+                } else if (
+                    target !== btnRef.current &&
+                    target !== menuBgRef.current
+                ) {
+                    // probably clicked a link or something in the header close menu
+                    // but allow propagation
+                    setMenuOpen(false);
+                }
+            }
+        };
+        document.addEventListener('click', fn, true);
+
+        return () => {
+            document.removeEventListener('click', fn, true);
+        };
+    }, [isMenuOpen]);
     const menuLinks = (
         <ol className={cl(st['nav-list'], st['nav-item'], st['extend'])}>
             {LINKS.map((aLink) => (
@@ -44,12 +80,13 @@ function TopNavHeader() {
             })}
             ref={containerRef}
         >
-            <div className={st['menu-bg']} />
+            <div className={st['menu-bg']} ref={menuBgRef} />
             <Button
                 variant="linkPlain"
                 className={st.menu}
                 as="span"
                 onClick={onHandleMenuClick}
+                ref={btnRef}
             >
                 <span className={cl(st.line, st['line-1'])} />
                 <span className={cl(st.line, st['line-2'])} />
