@@ -35,10 +35,10 @@ $icons: (
     @if $as != 'before' and $as != 'after' {
         @error "as must be either 'before' or 'after'";
     }
-    @extend %icon;
 
     &::#{$as} {
         /* stylelint-disable-next-line function-no-unknown */
         content: map.get($icons, $icon);
+        @extend %icon;
     }
 }

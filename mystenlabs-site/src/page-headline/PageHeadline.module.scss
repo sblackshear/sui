@@ -31,6 +31,7 @@ $empty-space: calc($header-space + values.$main-top-padding);
 
 .headline {
     font-size: 65px;
+    font-weight: 600;
     padding: 0 40px;
     text-align: center;
     max-width: 60%;
