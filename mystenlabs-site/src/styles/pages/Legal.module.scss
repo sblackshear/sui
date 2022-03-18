@@ -69,7 +69,7 @@
 
     @media (max-width: 800px) {
         flex-flow: row nowrap;
-        align-items: flex-start;
+        align-items: stretch;
         justify-content: center;
         border-right: none;
         border-bottom: 1px solid rgb(0 0 0 / 19%);
@@ -94,6 +94,7 @@
     @media (max-width: 800px) {
         margin: 0 0 -2px 20px;
         padding: 0 10px 8px;
+        white-space: normal;
 
         &:first-child {
             margin-left: 0;
@@ -109,4 +110,8 @@
             border-bottom: 3px solid #d40551;
         }
     }
+}
+
+.tab-content {
+    overflow-x: hidden;
 }

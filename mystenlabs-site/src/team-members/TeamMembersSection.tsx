@@ -1,5 +1,5 @@
-import { memo, useMemo } from 'react';
 import cl from 'classnames';
+import { memo, useMemo } from 'react';
 
 import Link from '../link/Link';
 import Section from '../section/Section';

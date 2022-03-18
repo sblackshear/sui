@@ -1,0 +1,22 @@
+@use '../styles/mysten-icons.scss' as icons;
+
+.title {
+    font-weight: 700;
+    font-size: 35px;
+    margin: 0;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    @include icons.icon(clock);
+
+    margin: 0;
+    font-weight: 500;
+    font-size: 18px;
+    color: rgb(0 0 0 / 35%);
+
+    &::before {
+        margin-right: 10px;
+        font-size: 14px;
+    }
+}
