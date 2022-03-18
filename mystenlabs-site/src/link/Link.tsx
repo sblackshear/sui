@@ -15,6 +15,7 @@ export type LinkProps = {
     btnStyle?: ButtonProps['btnStyle'];
     disabled?: boolean;
     className?: string;
+    scroll?: boolean;
 };
 
 function Link({
@@ -26,6 +27,7 @@ function Link({
     btnStyle,
     disabled = false,
     className,
+    scroll = true,
 }: LinkProps) {
     const target = external ? '_blank' : undefined;
     const link = (
@@ -44,7 +46,11 @@ function Link({
     if (external) {
         return link;
     }
-    return <NextLink href={to}>{link}</NextLink>;
+    return (
+        <NextLink href={to} scroll={scroll}>
+            {link}
+        </NextLink>
+    );
 }
 
 export default memo(Link);

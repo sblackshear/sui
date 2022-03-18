@@ -1,0 +1,112 @@
+@use '../values.scss';
+
+.page-headline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column nowrap;
+    height: 40vh;
+    position: relative;
+    overflow: hidden;
+
+    > * {
+        z-index: 2;
+    }
+}
+
+.title {
+    text-align: center;
+    font-weight: 600;
+    font-size: 65px;
+}
+
+.content {
+    background-color: values.$white;
+    color: values.$black;
+    margin: 0 -2rem; // padding of page container
+    padding: 35px;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 30px;
+
+    @media (max-width: 800px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.cube-1 {
+    background: url('../../assets/images/cube-small-full-1.png');
+    z-index: 1;
+    width: 150px;
+    height: 100px;
+    background-size: cover;
+    position: absolute;
+    top: 25%;
+    left: 10%;
+    background-repeat: no-repeat;
+    background-position: left top;
+}
+
+.cube-2 {
+    background: url('../../assets/images/cube-full-1.png');
+    z-index: 1;
+    width: 150px;
+    height: 185px;
+    background-size: cover;
+    position: absolute;
+    bottom: -80px;
+    right: 3%;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+}
+
+.tabs {
+    display: flex;
+    flex-flow: column nowrap;
+    border-right: 1px solid rgb(0 0 0 / 19%);
+    padding-left: 7vw;
+    align-items: stretch;
+
+    @media (max-width: 800px) {
+        flex-flow: row nowrap;
+        align-items: flex-start;
+        justify-content: center;
+        border-right: none;
+        border-bottom: 1px solid rgb(0 0 0 / 19%);
+        padding-left: 0;
+    }
+}
+
+.tab {
+    font-size: 18px;
+    font-weight: 400;
+    transition: all 0.2s ease-in-out;
+    margin-top: 10px;
+    margin-right: -2px;
+    justify-content: flex-start;
+    white-space: nowrap;
+    padding-right: 3vw;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    @media (max-width: 800px) {
+        margin: 0 0 -2px 20px;
+        padding: 0 10px 8px;
+
+        &:first-child {
+            margin-left: 0;
+        }
+    }
+
+    &.selected {
+        font-weight: 700;
+        border-right: 3px solid #d40551;
+
+        @media (max-width: 800px) {
+            border-right: none;
+            border-bottom: 3px solid #d40551;
+        }
+    }
+}
