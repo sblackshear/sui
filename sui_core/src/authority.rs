@@ -2,6 +2,12 @@
 // Copyright (c) 2022, Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
+use std::{
+    collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque},
+    pin::Pin,
+    sync::Arc,
+};
+
 use move_binary_format::CompiledModule;
 use move_bytecode_utils::module_cache::ModuleCache;
 use move_core_types::{
@@ -9,11 +15,9 @@ use move_core_types::{
     resolver::{ModuleResolver, ResourceResolver},
 };
 use move_vm_runtime::native_functions::NativeFunctionTable;
-use std::{
-    collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque},
-    pin::Pin,
-    sync::Arc,
-};
+use tracing::*;
+
+pub use authority_store::AuthorityStore;
 use sui_adapter::adapter;
 use sui_types::{
     base_types::*,
@@ -27,7 +31,7 @@ use sui_types::{
     storage::{BackingPackageStore, DeleteKind, Storage},
     MOVE_STDLIB_ADDRESS, SUI_FRAMEWORK_ADDRESS,
 };
-use tracing::*;
+pub use temporary_store::AuthorityTemporaryStore;
 
 use crate::{
     authority_batch::{BatchSender, BroadcastReceiver, BroadcastSender},
@@ -42,11 +46,8 @@ pub mod authority_tests;
 #[path = "unit_tests/move_integration_tests.rs"]
 pub mod move_integration_tests;
 
-mod temporary_store;
-pub use temporary_store::AuthorityTemporaryStore;
-
 mod authority_store;
-pub use authority_store::AuthorityStore;
+mod temporary_store;
 
 // based on https://github.com/diem/move/blob/62d48ce0d8f439faa83d05a4f5cd568d4bfcb325/language/tools/move-cli/src/sandbox/utils/mod.rs#L50
 const MAX_GAS_BUDGET: u64 = 18446744073709551615 / 1000 - 1;
@@ -210,7 +211,11 @@ impl AuthorityState {
                 let transfer_object = &input_objects[0].1;
                 gas::check_transfer_gas_requirement(gas_object, transfer_object)
             }
-            TransactionKind::Call(op) => gas::check_move_gas_requirement(gas_object, op.gas_budget),
+            TransactionKind::Call(op)
+            | TransactionKind::SplitCoin(op)
+            | TransactionKind::MergeCoin(op) => {
+                gas::check_move_gas_requirement(gas_object, op.gas_budget)
+            }
             TransactionKind::Publish(op) => {
                 gas::check_move_gas_requirement(gas_object, op.gas_budget)
             }

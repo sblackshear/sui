@@ -2,16 +2,10 @@
 // Copyright (c) 2022, Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::crypto::{
-    sha3_hash, AuthoritySignature, BcsSignable, Signature, VerificationObligation,
-};
-use crate::object::{Object, ObjectFormatOptions, Owner, OBJECT_START_VERSION};
-
-use super::{base_types::*, batch::*, committee::Committee, error::*, event::Event};
-
-#[cfg(test)]
-#[path = "unit_tests/messages_tests.rs"]
-mod messages_tests;
+use std::collections::{BTreeSet, HashSet};
+use std::fmt::Write;
+use std::fmt::{Display, Formatter};
+use std::hash::{Hash, Hasher};
 
 use move_binary_format::{access::ModuleAccess, CompiledModule};
 use move_core_types::{
@@ -21,12 +15,14 @@ use move_core_types::{
 use name_variant::NamedVariant;
 use once_cell::sync::OnceCell;
 use serde::{Deserialize, Serialize};
-// use static_assertions::const_assert_eq;
 
-use crate::crypto::{sha3_hash, AuthoritySignature, BcsSignable, Signature};
+use crate::crypto::Signable;
+use crate::crypto::{
+    sha3_hash, AuthoritySignature, BcsSignable, Signature, VerificationObligation,
+};
 use crate::object::{Object, ObjectFormatOptions, Owner, OBJECT_START_VERSION};
 
-//use super::{base_types::*, batch::*, committee::Committee, error::*, event::Event};
+use super::{base_types::*, batch::*, committee::Committee, error::*, event::Event};
 
 #[cfg(test)]
 #[path = "unit_tests/messages_tests.rs"]
@@ -884,8 +880,6 @@ impl<'a> SignatureAggregator<'a> {
         }
     }
 }
-
-use crate::crypto::Signable;
 
 impl CertifiedTransaction {
     pub fn new(transaction: Transaction) -> CertifiedTransaction {

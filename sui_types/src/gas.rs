@@ -8,8 +8,6 @@ use crate::{
     object::Object,
 };
 
-use super::base_types::*;
-
 macro_rules! ok_or_gas_error {
     ($cond:expr, $e:expr) => {
         if !($cond) {
