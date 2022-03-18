@@ -6,18 +6,22 @@ export type LogoProps = {
     layout?: 'left' | 'top';
     variant?: 'full' | 'icon';
     size?: 'normal' | 'huge';
+    logoTxtClassName?: string;
 };
 
 function Logo({
     layout = 'left',
     variant = 'full',
     size = 'normal',
+    logoTxtClassName,
 }: LogoProps) {
     const showTxt = variant === 'full';
     return (
         <div className={cl(st.logo, st[layout], st[size])}>
             <span className={st['icon']} />
-            {showTxt ? <span className={st['txt']} /> : null}
+            {showTxt ? (
+                <span className={cl(logoTxtClassName, st['txt'])} />
+            ) : null}
         </div>
     );
 }
