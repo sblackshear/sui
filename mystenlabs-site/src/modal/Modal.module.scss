@@ -1,0 +1,57 @@
+@use '../styles/mysten-icons.scss' as icons;
+@use '../styles/values.scss';
+
+.modal {
+    position: fixed;
+    z-index: 999999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: values.$white;
+    color: values.$black;
+    padding: 20px;
+    border-radius: 24px;
+    width: 60vw;
+    height: 70vh;
+    display: flex;
+    flex-flow: column nowrap;
+    overflow: auto;
+    outline: none;
+    align-items: center;
+
+    @media (max-width: 800px), (max-height: 500px) {
+        width: 100vw;
+        height: 100vh;
+    }
+}
+
+.backdrop {
+    position: fixed;
+    background: rgb(28 27 27 / 77%);
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 999999;
+}
+
+.close {
+    @include icons.icon(close);
+
+    align-self: flex-end;
+    margin-top: 15px;
+    margin-bottom: 10px;
+
+    &::before {
+        font-size: 20px;
+    }
+}
+
+.content {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    overflow: auto;
+}

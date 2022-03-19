@@ -9,6 +9,7 @@
     text-align: center;
     font-size: 15px;
     font-weight: 500;
+    cursor: pointer;
 }
 
 .btn {
@@ -45,4 +46,11 @@
 
 .disabled {
     cursor: default;
+}
+
+button.link.plain {
+    background: none;
+    outline: none;
+    border: none;
+    cursor: pointer;
 }
