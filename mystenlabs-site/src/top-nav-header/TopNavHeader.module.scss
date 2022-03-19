@@ -5,7 +5,7 @@
     background-color: values.$header-bg-colour;
     position: sticky;
     top: 0;
-    margin-top: 43px;
+    margin-top: values.$header-total-vertical-margin;
     padding: 12px 15px 12px 25px;
     border-radius: values.$border-radius;
     overflow-x: hidden;
@@ -157,7 +157,7 @@
     }
 
     .menu-bg {
-        transform: translate(-2rem, -43px);
+        transform: translate(-2rem, -#{values.$header-total-vertical-margin});
         height: 90vh;
         width: 100vw;
         border-top-left-radius: 0;

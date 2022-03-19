@@ -114,3 +114,11 @@ a {
 .mt-25 {
     margin-top: 25px;
 }
+
+:root {
+    @media (max-width: 800px) {
+        --header-height: #{values.$header-height-br-800};
+    }
+
+    --header-height: #{values.$header-height};
+}
