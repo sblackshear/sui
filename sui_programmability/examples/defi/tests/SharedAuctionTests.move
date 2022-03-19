@@ -16,7 +16,7 @@ module DeFi::SharedAuctionTests {
 
     // Error codes.
     const EWRONG_ITEM_VALUE: u64 = 1;
-    const EWRONG_COIN_VALUE: u64 = 1;
+    const EWRONG_COIN_VALUE: u64 = 2;
 
     // Example of an object type that could be sold at an auction.
     struct SomeItemToSell has key, store {
@@ -24,7 +24,7 @@ module DeFi::SharedAuctionTests {
         value: u64,
     }
 
-    // Initializes the "state of the world" that mimicks what should
+    // Initializes the "state of the world" that mimics what should
     // be available in Sui genesis state (e.g., mints and distributes
     // coins to users).
     fun init(ctx: &mut TxContext, bidders: vector<address>) {
