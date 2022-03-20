@@ -33,6 +33,10 @@ function PageHeadline({
     }
     return (
         <div className={cl(st[size], st.container)}>
+            <div className={st['cube-top-left']} />
+            <div className={st['cube-bottom-left']} />
+            <div className={st['cube-top-right']} />
+            <div className={st['cube-bottom-right']} />
             <div className={st.center}>
                 <div className={st.headline}>{headline}</div>
                 {hasActions ? (
