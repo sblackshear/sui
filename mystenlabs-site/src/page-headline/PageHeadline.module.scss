@@ -8,6 +8,7 @@
     justify-content: flex-end;
     width: 100%;
     position: relative;
+
     > * {
         z-index: 2;
     }
@@ -80,7 +81,7 @@ $empty-space: calc($header-space + values.$main-top-padding);
     }
 }
 
-.icon {
+%icon {
     position: absolute;
     z-index: 1;
     background-repeat: no-repeat;
@@ -88,7 +89,7 @@ $empty-space: calc($header-space + values.$main-top-padding);
 }
 
 .cube-top-left {
-    @extend .icon;
+    @extend %icon;
 
     &.normal {
         background-image: url('../assets/images/cube-small-full-4.png');
@@ -110,7 +111,7 @@ $empty-space: calc($header-space + values.$main-top-padding);
 }
 
 .cube-bottom-left {
-    @extend .icon;
+    @extend %icon;
 
     &.normal {
         background-image: url('../assets/images/cube-left-2.png');
@@ -132,7 +133,7 @@ $empty-space: calc($header-space + values.$main-top-padding);
 }
 
 .cube-top-right {
-    @extend .icon;
+    @extend %icon;
 
     &.normal {
         background-image: url('../assets/images/cube-right-2.png');
@@ -154,7 +155,7 @@ $empty-space: calc($header-space + values.$main-top-padding);
 }
 
 .cube-bottom-right {
-    @extend .icon;
+    @extend %icon;
 
     &.normal {
         background-image: url('../assets/images/cube-small-full-2.png');

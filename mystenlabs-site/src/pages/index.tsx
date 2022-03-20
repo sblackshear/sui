@@ -1,5 +1,6 @@
 import cl from 'classnames';
 import Head from 'next/head';
+import { useParallax } from 'react-scroll-parallax';
 
 import ActionBox from '../action-box/ActionBox';
 import Footer from '../footer/Footer';
@@ -15,6 +16,7 @@ import TopNavHeader from '../top-nav-header/TopNavHeader';
 import TypingWords from '../typing-words/TypingWords';
 
 import type { NextPage } from 'next';
+import type { RefObject } from 'react';
 
 import st from '../styles/pages/Home.module.scss';
 
@@ -28,10 +30,21 @@ const WORDS = [
     'engineers',
     'economists',
 ];
+const NEXT_SECTION_HREF = '/#ecosystem';
+const NEXT_SECTION_HREF_EXTERNAL = false;
 
 const Home: NextPage = () => {
-    const nextSectionHref = '/#ecosystem';
-    const nextSectionHrefExternal = false;
+    const optionsTop: Parameters<typeof useParallax>[0] = {
+        easing: 'easeInOut',
+        translateY: [-10, -60],
+    };
+    const { ref: topRef } = useParallax(optionsTop);
+    const optionsBottom: Parameters<typeof useParallax>[0] = {
+        easing: 'easeInOut',
+        translateY: [50, -50],
+    };
+    const { ref: leftBottomRef } = useParallax(optionsBottom);
+    const { ref: rightBottomRef } = useParallax(optionsBottom);
     return (
         <div className="page-container">
             <Head>
@@ -48,8 +61,8 @@ const Home: NextPage = () => {
             <TopNavHeader />
             <main className="page-main">
                 <PageHeadline
-                    nextSectionHref={nextSectionHref}
-                    nextSectionHrefExternal={nextSectionHrefExternal}
+                    nextSectionHref={NEXT_SECTION_HREF}
+                    nextSectionHrefExternal={NEXT_SECTION_HREF_EXTERNAL}
                 >
                     <div>
                         We are{' '}
@@ -58,8 +71,8 @@ const Home: NextPage = () => {
                     </div>
                     <Link
                         variant="btn"
-                        to={nextSectionHref}
-                        external={nextSectionHrefExternal}
+                        to={NEXT_SECTION_HREF}
+                        external={NEXT_SECTION_HREF_EXTERNAL}
                     >
                         Learn More
                     </Link>
@@ -99,9 +112,18 @@ const Home: NextPage = () => {
                 </Section>
                 <TeamMembersSection limit={8} forceLink={true} />
                 <div className={st.boxes}>
-                    <div className={st['cube-top']} />
-                    <div className={st['cube-bottom']} />
-                    <div className={st['cube-bottom-small']} />
+                    <div
+                        ref={topRef as RefObject<HTMLDivElement>}
+                        className={st['cube-top']}
+                    />
+                    <div
+                        ref={leftBottomRef as RefObject<HTMLDivElement>}
+                        className={st['cube-bottom']}
+                    />
+                    <div
+                        ref={rightBottomRef as RefObject<HTMLDivElement>}
+                        className={st['cube-bottom-small']}
+                    />
                     <Section
                         id="investors"
                         label="Investors"

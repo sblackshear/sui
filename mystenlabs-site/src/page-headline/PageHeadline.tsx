@@ -1,9 +1,10 @@
 import cl from 'classnames';
 import React, { Children, memo, useMemo } from 'react';
+import { useParallax } from 'react-scroll-parallax';
 
 import Link from '../link/Link';
 
-import type { ReactNode } from 'react';
+import type { ReactNode, RefObject } from 'react';
 
 import st from './PageHeadline.module.scss';
 
@@ -22,6 +23,18 @@ function PageHeadline({
     nextSectionHrefExternal,
     bg = 'normal',
 }: PageHeadlineProps) {
+    const optionsTop: Parameters<typeof useParallax>[0] = {
+        easing: 'easeInOut',
+        translateY: [100, -50],
+    };
+    const optionsBottom: Parameters<typeof useParallax>[0] = {
+        easing: 'easeInOut',
+        translateY: [0, -100],
+    };
+    const { ref: leftTopRef } = useParallax(optionsTop);
+    const { ref: rightTopRef } = useParallax(optionsTop);
+    const { ref: leftBottomRef } = useParallax(optionsBottom);
+    const { ref: rightBottomRef } = useParallax(optionsBottom);
     const [headline, actions] = useMemo(() => {
         const [el1, ...rest] = Children.toArray(children);
         return [el1, rest];
@@ -35,10 +48,22 @@ function PageHeadline({
     }
     return (
         <div className={cl(st[size], st.container)}>
-            <div className={cl(st[bg], st['cube-top-left'])} />
-            <div className={cl(st[bg], st['cube-bottom-left'])} />
-            <div className={cl(st[bg], st['cube-top-right'])} />
-            <div className={cl(st[bg], st['cube-bottom-right'])} />
+            <div
+                ref={leftTopRef as RefObject<HTMLDivElement>}
+                className={cl(st[bg], st['cube-top-left'])}
+            />
+            <div
+                ref={leftBottomRef as RefObject<HTMLDivElement>}
+                className={cl(st[bg], st['cube-bottom-left'])}
+            />
+            <div
+                ref={rightTopRef as RefObject<HTMLDivElement>}
+                className={cl(st[bg], st['cube-top-right'])}
+            />
+            <div
+                ref={rightBottomRef as RefObject<HTMLDivElement>}
+                className={cl(st[bg], st['cube-bottom-right'])}
+            />
             <div className={st.center}>
                 <div className={st.headline}>{headline}</div>
                 {hasActions ? (

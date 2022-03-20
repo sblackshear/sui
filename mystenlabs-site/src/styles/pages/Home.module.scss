@@ -11,7 +11,7 @@
     }
 }
 
-.cube {
+%cube {
     background-size: contain;
     background-repeat: no-repeat;
     position: absolute;
@@ -19,7 +19,8 @@
 }
 
 .cube-top {
-    @extend .cube;
+    @extend %cube;
+
     background-image: url('../../assets/images/cube-full-3.png');
     background-position: left top;
     width: 22vw;
@@ -31,7 +32,8 @@
 }
 
 .cube-bottom {
-    @extend .cube;
+    @extend %cube;
+
     background-image: url('../../assets/images/cube-full-2.png');
     background-position: left top;
     width: 26vw;
@@ -43,7 +45,8 @@
 }
 
 .cube-bottom-small {
-    @extend .cube;
+    @extend %cube;
+
     background-image: url('../../assets/images/cube-small-full-2.png');
     background-position: left top;
     width: 10vw;
