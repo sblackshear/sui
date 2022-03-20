@@ -32,6 +32,7 @@ const AboutUs: NextPage = () => {
                 <PageHeadline
                     nextSectionHref={nextSectionHref}
                     nextSectionHrefExternal={nextSectionHrefExternal}
+                    bg="alternative"
                 >
                     <div>
                         Mysten Labs was built to accelerate the adoption of

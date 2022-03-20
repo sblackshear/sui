@@ -40,7 +40,7 @@ $empty-space: calc($header-space + values.$main-top-padding);
     padding: 0 20px;
     text-align: center;
     max-width: 60%;
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(1px);
     border-radius: 19px;
 }
 
@@ -89,40 +89,88 @@ $empty-space: calc($header-space + values.$main-top-padding);
 
 .cube-top-left {
     @extend .icon;
-    background-image: url('../assets/images/cube-small-full-4.png');
-    background-position: left top;
-    width: 13vw;
-    height: 23vh;
-    top: 11vh;
-    left: 8vw;
+
+    &.normal {
+        background-image: url('../assets/images/cube-small-full-4.png');
+        background-position: left top;
+        width: 13vw;
+        height: 23vh;
+        top: 11vh;
+        left: 8vw;
+    }
+
+    &.alternative {
+        background-image: url('../assets/images/cube-left-2.png');
+        background-position: left top;
+        width: 21vw;
+        height: 38vh;
+        left: -2rem;
+        top: 2vw;
+    }
 }
 
 .cube-bottom-left {
     @extend .icon;
-    background-image: url('../assets/images/cube-left-2.png');
-    background-position: left top;
-    width: 24vw;
-    height: 43vh;
-    left: -2rem;
-    top: 51.5vh;
+
+    &.normal {
+        background-image: url('../assets/images/cube-left-2.png');
+        background-position: left top;
+        width: 24vw;
+        height: 43vh;
+        left: -2rem;
+        top: 51.5vh;
+    }
+
+    &.alternative {
+        background-image: url('../assets/images/cube-small-full-3.png');
+        background-position: left top;
+        width: 18vw;
+        height: 29vh;
+        top: 65vh;
+        left: 4vw;
+    }
 }
 
 .cube-top-right {
     @extend .icon;
-    background-image: url('../assets/images/cube-right-2.png');
-    background-position: right top;
-    width: 15.5vw;
-    height: 43.5vh;
-    right: -2rem;
-    top: 1vh;
+
+    &.normal {
+        background-image: url('../assets/images/cube-right-2.png');
+        background-position: right top;
+        width: 15.5vw;
+        height: 43.5vh;
+        right: -2rem;
+        top: 1vh;
+    }
+
+    &.alternative {
+        background-image: url('../assets/images/cube-small-full-4.png');
+        background-position: left top;
+        width: 13vw;
+        height: 23vh;
+        left: 85vw;
+        top: 10vh;
+    }
 }
 
 .cube-bottom-right {
     @extend .icon;
-    background-image: url('../assets/images/cube-small-full-2.png');
-    background-position: left top;
-    width: 18vw;
-    height: 28vh;
-    left: 81.5vw;
-    top: 66.5;
+
+    &.normal {
+        background-image: url('../assets/images/cube-small-full-2.png');
+        background-position: left top;
+        width: 18vw;
+        height: 28vh;
+        left: 81.5vw;
+        top: 66.5vh;
+    }
+
+    &.alternative {
+        background-image: url('../assets/images/cube-right-2.png');
+        background-position: right top;
+        width: 15.5vw;
+        height: 43.5vh;
+        right: -2rem;
+        top: 53vh;
+    }
 }

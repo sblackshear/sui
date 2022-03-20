@@ -12,6 +12,7 @@ export type PageHeadlineProps = {
     children: (string | ReactNode) | (string | ReactNode)[];
     nextSectionHref?: string;
     nextSectionHrefExternal?: boolean;
+    bg?: 'normal' | 'alternative';
 };
 
 function PageHeadline({
@@ -19,6 +20,7 @@ function PageHeadline({
     children,
     nextSectionHref,
     nextSectionHrefExternal,
+    bg = 'normal',
 }: PageHeadlineProps) {
     const [headline, actions] = useMemo(() => {
         const [el1, ...rest] = Children.toArray(children);
@@ -33,10 +35,10 @@ function PageHeadline({
     }
     return (
         <div className={cl(st[size], st.container)}>
-            <div className={st['cube-top-left']} />
-            <div className={st['cube-bottom-left']} />
-            <div className={st['cube-top-right']} />
-            <div className={st['cube-bottom-right']} />
+            <div className={cl(st[bg], st['cube-top-left'])} />
+            <div className={cl(st[bg], st['cube-bottom-left'])} />
+            <div className={cl(st[bg], st['cube-top-right'])} />
+            <div className={cl(st[bg], st['cube-bottom-right'])} />
             <div className={st.center}>
                 <div className={st.headline}>{headline}</div>
                 {hasActions ? (
