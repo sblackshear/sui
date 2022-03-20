@@ -98,31 +98,36 @@ const Home: NextPage = () => {
                     </div>
                 </Section>
                 <TeamMembersSection limit={8} forceLink={true} />
-                <Section
-                    id="investors"
-                    label="Investors"
-                    title="Meet Our Backers"
-                    description="Backed by top firms and visionaries"
-                    variant="secondary"
-                >
-                    <div className="grid col-2 gap-small">
-                        {HIGHLIGHTED_INVESTORS.map((i) => (
-                            <InvestorBadge key={i.href} {...i} />
-                        ))}
-                    </div>
-                    <div
-                        className={cl(
-                            'grid',
-                            'col-4',
-                            'gap-small',
-                            st.investors
-                        )}
+                <div className={st.boxes}>
+                    <div className={st['cube-top']} />
+                    <div className={st['cube-bottom']} />
+                    <div className={st['cube-bottom-small']} />
+                    <Section
+                        id="investors"
+                        label="Investors"
+                        title="Meet Our Backers"
+                        description="Backed by top firms and visionaries"
+                        variant="secondary"
                     >
-                        {REST_INVESTORS.map((i) => (
-                            <InvestorBadge key={i.href} {...i} />
-                        ))}
-                    </div>
-                </Section>
+                        <div className="grid col-2 gap-small">
+                            {HIGHLIGHTED_INVESTORS.map((i) => (
+                                <InvestorBadge key={i.href} {...i} />
+                            ))}
+                        </div>
+                        <div
+                            className={cl(
+                                'grid',
+                                'col-4',
+                                'gap-small',
+                                st.investors
+                            )}
+                        >
+                            {REST_INVESTORS.map((i) => (
+                                <InvestorBadge key={i.href} {...i} />
+                            ))}
+                        </div>
+                    </Section>
+                </div>
                 <Section
                     id="community"
                     label="Community"
