@@ -18,9 +18,8 @@ function SubscribeTrigger({}: SubscribeTriggerProps) {
         <>
             <div className={st.container} onClick={onHandleTriggerClick}>
                 <h4 className={st.title}>Subscribe to our newsletter</h4>
-                {/* TODO: replace this text */}
                 <div className={st.description}>
-                    Accumsan adipiscing eros scelerisque morbi. Volutpat eu.
+                    Get the latest updates and news from Mysten Labs.
                 </div>
                 <span className={st.icon} />
             </div>

@@ -26,6 +26,7 @@ body {
     background-color: values.$bg-colour;
     scroll-behavior: smooth;
     color: values.$white;
+    overflow-x: hidden;
 }
 
 pre {

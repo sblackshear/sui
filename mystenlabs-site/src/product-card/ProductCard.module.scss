@@ -25,7 +25,7 @@
 
 .icon {
     color: values.$black;
-    z-index: 1;
+    z-index: 2;
 
     &.sui {
         @include icons.icon('sui');

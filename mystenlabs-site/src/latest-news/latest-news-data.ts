@@ -38,13 +38,13 @@ export const latestNews = [
         'https://www.nytimes.com/2021/12/20/technology/silicon-valley-cryptocurrency-start-ups.html'
     ),
     make(
-        'Former FB engineers raise $36M for Web3',
+        'Former Facebook engineers at Mysten Labs raise $36M for Web3 infrastructure',
         'CoinTelegraph',
         'Dec 06, 2021',
         'https://cointelegraph.com/news/former-facebook-engineers-at-mysten-labs-raise-36m-for-web3-infrastructure'
     ),
     make(
-        'Mysten Labs will soon launch its own NFT platform',
+        'A16z Leads $36M Bet on Web 3 Startup From Facebook Crypto Vets',
         'CoinDesk',
         'Dec 06, 2021',
         'https://www.coindesk.com/business/2021/12/06/a16z-leads-36m-bet-on-web-3-startup-from-facebook-crypto-vets/'

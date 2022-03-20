@@ -19,7 +19,7 @@
 .container {
     &::after {
         content: '|';
-        margin-left: 5px;
+        margin-left: -4px;
         animation: blink 1s ease-in-out infinite;
     }
 }

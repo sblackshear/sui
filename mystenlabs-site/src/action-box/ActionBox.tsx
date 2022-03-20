@@ -10,7 +10,7 @@ function ActionBox() {
         <div className={st.container}>
             <span className={st['cube-1']} />
             <span className={st['cube-2']} />
-            <h2 className={st.title}>Build the future</h2>
+            <h2 className={st.title}>Build the decentralized future</h2>
             <div className={st.description}>
                 Mysten Labs gathers the brightest minds to create infrastructure
                 and tools for the decentralized future for everyone. Let&apos;s

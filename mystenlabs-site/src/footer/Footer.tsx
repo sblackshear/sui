@@ -10,14 +10,14 @@ import st from './Footer.module.scss';
 const SOCIAL_LINKS = [
     // TODO: links
     { icon: 'fb', link: '' },
-    { icon: 'twitter', link: '' },
-    { icon: 'linkedin', link: '' },
-    { icon: 'github', link: '' },
+    { icon: 'twitter', link: 'https://twitter.com/mysten_labs' },
+    { icon: 'linkedin', link: 'https://www.linkedin.com/company/mysten-labs' },
+    { icon: 'github', link: 'https://github.com/MystenLabs' },
 ];
 
 // TODO: links
-const SUI_LINK = '';
-const MOVE_LINK = '';
+const SUI_LINK = '#';
+const MOVE_LINK = '#';
 
 function Footer() {
     const { pathname, query } = useRouter();

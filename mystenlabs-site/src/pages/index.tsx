@@ -89,7 +89,7 @@ const Home: NextPage = () => {
                     id="ecosystem"
                     label="Ecosystem"
                     title="What we're building"
-                    description="Mysten Labs is built to accelerate the adoption of web3. Let us build the foundation of web3. You will create the products of tomorrow."
+                    description="Mysten Labs is built to accelerate the adoption of web3. We're building the foundations for the decentralized future."
                 >
                     <div className="grid col-2 gap-medium">
                         <ProductCard
@@ -126,9 +126,8 @@ const Home: NextPage = () => {
                     />
                     <Section
                         id="investors"
-                        label="Investors"
+                        label="Our Investors"
                         title="Meet Our Backers"
-                        description="Backed by top firms and visionaries"
                         variant="secondary"
                     >
                         <div className="grid col-2 gap-small">
@@ -154,7 +153,7 @@ const Home: NextPage = () => {
                     id="community"
                     label="Community"
                     title="Latest news"
-                    description="Stay informed on Mysten Labs and our recent developments"
+                    description="Stay informed on Mysten Labs and our recent developments."
                     variant="transparent"
                 >
                     <LatestNews />
