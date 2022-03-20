@@ -8,8 +8,7 @@ import Logo from '../logo/Logo';
 import st from './Footer.module.scss';
 
 const SOCIAL_LINKS = [
-    // TODO: links
-    { icon: 'fb', link: '' },
+    { icon: 'discord', link: 'https://discord.gg/Tcfn7UdmAc' },
     { icon: 'twitter', link: 'https://twitter.com/mysten_labs' },
     { icon: 'linkedin', link: 'https://www.linkedin.com/company/mysten-labs' },
     { icon: 'github', link: 'https://github.com/MystenLabs' },
