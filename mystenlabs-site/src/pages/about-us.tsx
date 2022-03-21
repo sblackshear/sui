@@ -35,12 +35,11 @@ const AboutUs: NextPage = () => {
                     bg="alternative"
                 >
                     <div>
-                        Mysten Labs was built to accelerate the adoption of
-                        web3.{' '}
+                        Mysten Labs is{' '}
                         <span className="color-primary">
-                            Let us build the foundations
+                            building the foundations
                         </span>{' '}
-                        while you create the products of tomorrow.
+                        for the decentralized future.
                     </div>
                 </PageHeadline>
                 <Section
