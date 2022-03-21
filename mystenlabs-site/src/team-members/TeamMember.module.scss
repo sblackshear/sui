@@ -66,11 +66,17 @@
     @include icons.icon(twitter);
 }
 
-// this needs to be the same with grid break point
 @media (max-width: 800px) {
     .img-container {
         height: 40vh;
         max-height: 367px;
+    }
+}
+
+@media (max-width: 500px) {
+    .img-container {
+        height: 30vh;
+        max-height: 250px;
     }
 }
 

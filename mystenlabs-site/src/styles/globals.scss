@@ -91,7 +91,7 @@ a {
 }
 
 .page-container {
-    padding: 0 2rem;
+    padding: 0 var(--page-padding-x);
 }
 
 .page-main {
@@ -120,7 +120,13 @@ a {
 :root {
     @media (max-width: 800px) {
         --header-height: #{values.$header-height-br-800};
+        --page-padding-x: 16px;
+    }
+
+    @media (max-width: 600px) {
+        --page-padding-x: 8px;
     }
 
     --header-height: #{values.$header-height};
+    --page-padding-x: 32px;
 }

@@ -26,7 +26,7 @@
 
 .description {
     text-align: center;
-    margin: 30px 0;
+    margin: 30px 40px;
     font-weight: 400;
     font-size: 18px;
     color: values.$section-primary-alt-color;
@@ -61,6 +61,14 @@
 @media (max-width: 768px) {
     .container {
         padding: 200px 50px;
+    }
+
+    .title {
+        font-size: 40px;
+    }
+
+    .description {
+        font-size: 14px;
     }
 
     .cube-1 {

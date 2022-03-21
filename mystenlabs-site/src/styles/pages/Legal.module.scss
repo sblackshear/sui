@@ -18,12 +18,16 @@
     text-align: center;
     font-weight: 600;
     font-size: 65px;
+
+    @media (max-width: 500px) {
+        font-size: 40px;
+    }
 }
 
 .content {
     background-color: values.$white;
     color: values.$black;
-    margin: 0 -2rem; // padding of page container
+    margin: 0 calc(-1 * var(--page-padding-x));
     padding: 35px;
     display: grid;
     grid-template-columns: 1fr 3fr;
@@ -42,9 +46,13 @@
     background-size: cover;
     position: absolute;
     top: 25%;
-    left: 10%;
+    left: 7%;
     background-repeat: no-repeat;
     background-position: left top;
+
+    @media (max-width: 500px) {
+        left: 2%;
+    }
 }
 
 .cube-2 {
@@ -55,9 +63,13 @@
     background-size: cover;
     position: absolute;
     bottom: -80px;
-    right: 3%;
+    right: 2%;
     background-repeat: no-repeat;
     background-position: left bottom;
+
+    @media (max-width: 500px) {
+        right: 0;
+    }
 }
 
 .tabs {

@@ -157,7 +157,10 @@
     }
 
     .menu-bg {
-        transform: translate(-2rem, -#{values.$header-total-vertical-margin});
+        transform: translate(
+            calc(-1 * var(--page-padding-x)),
+            -#{values.$header-total-vertical-margin}
+        );
         height: 90vh;
         width: 100vw;
         border-top-left-radius: 0;

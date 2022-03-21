@@ -32,6 +32,17 @@
     }
 }
 
+@media (max-width: 600px) {
+    .btn,
+    .link {
+        font-size: 12px;
+    }
+
+    .btn {
+        padding: 9px 19px;
+    }
+}
+
 .link {
     text-decoration: none;
 

@@ -80,8 +80,8 @@
     color: inherit;
     padding-left: 0;
     padding-right: 0;
-    margin-left: -2rem; // padding of page container
-    margin-right: -2rem;
+    margin-left: calc(-1 * var(--page-padding-x));
+    margin-right: calc(-1 * var(--page-padding-x));
 
     .description {
         color: values.$section-transparent-alt-color;

@@ -81,6 +81,13 @@ $empty-space: calc($header-space + values.$main-top-padding);
     }
 }
 
+@media (max-width: 550px) {
+    .headline {
+        font-size: 30px;
+        padding: 0 10px;
+    }
+}
+
 %icon {
     position: absolute;
     z-index: 1;
@@ -105,7 +112,7 @@ $empty-space: calc($header-space + values.$main-top-padding);
         background-position: left top;
         width: 21vw;
         height: 38vh;
-        left: -2rem;
+        left: calc(-1 * var(--page-padding-x));
         top: 2vw;
     }
 }
@@ -118,7 +125,7 @@ $empty-space: calc($header-space + values.$main-top-padding);
         background-position: left top;
         width: 24vw;
         height: 43vh;
-        left: -2rem;
+        left: calc(-1 * var(--page-padding-x));
         top: 51.5vh;
     }
 
@@ -140,7 +147,7 @@ $empty-space: calc($header-space + values.$main-top-padding);
         background-position: right top;
         width: 15.5vw;
         height: 43.5vh;
-        right: -2rem;
+        right: calc(-1 * var(--page-padding-x));
         top: 1vh;
     }
 
@@ -171,7 +178,7 @@ $empty-space: calc($header-space + values.$main-top-padding);
         background-position: right top;
         width: 15.5vw;
         height: 43.5vh;
-        right: -2rem;
+        right: calc(-1 * var(--page-padding-x));
         top: 53vh;
     }
 }
