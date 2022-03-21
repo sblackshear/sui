@@ -7,9 +7,18 @@ import Modal from '../../modal/Modal';
 import st from './SubscriptionModal.module.scss';
 
 async function doSubscription(email: string) {
-    // TODO: implement
-    return new Promise((res) => {
-        setTimeout(res, 2000);
+    if (process.env.NODE_ENV !== 'production') {
+        return new Promise((res) => {
+            setTimeout(res, 2000);
+        });
+    }
+    return fetch('/api/subscribe', {
+        method: 'post',
+        body: JSON.stringify({ email }),
+        headers: {
+            accepts: 'application/json',
+            'content-type': 'application/json',
+        },
     });
 }
 
