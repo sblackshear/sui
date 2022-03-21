@@ -2,6 +2,7 @@ import adeniyiImg from '../assets/images/people/Adenyi-Abiodun.png';
 import allyImg from '../assets/images/people/Ally-Medina.png';
 import evanImg from '../assets/images/people/Evan-Cheng.png';
 import kohImg from '../assets/images/people/Koh-Kim.png';
+import kostasImg from '../assets/images/people/Kostas-Chalkias.png';
 import samImg from '../assets/images/people/Sam-Blackshear.png';
 import georgeImg from '../assets/images/people/george-danezis.png';
 import todImg from '../assets/images/people/todd-fiala.png';
@@ -53,7 +54,7 @@ export const teamMembers = [
     makeTeamMember(
         'Kostas Chalkias',
         'Co-Founder, Chief Cryptographer',
-        undefined,
+        kostasImg.src,
         'https://www.linkedin.com/in/chalkiaskostas',
         'https://twitter.com/kostascrypto'
     ),
