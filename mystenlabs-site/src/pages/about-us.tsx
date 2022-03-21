@@ -1,6 +1,7 @@
 import Head from 'next/head';
 
 import ActionBox from '../action-box/ActionBox';
+import favIcon from '../assets/images/logo.svg';
 import Footer from '../footer/Footer';
 import Logo from '../logo/Logo';
 import PageHeadline from '../page-headline/PageHeadline';
@@ -25,7 +26,7 @@ const AboutUs: NextPage = () => {
                     name="description"
                     content="Creating Foundational Infrastructure For Web3.0"
                 />
-                <link rel="icon" href="/logo.svg" />
+                <link rel="icon" href={favIcon.src} />
             </Head>
             <TopNavHeader />
             <main className="page-main">

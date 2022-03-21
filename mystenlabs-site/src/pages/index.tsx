@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useParallax } from 'react-scroll-parallax';
 
 import ActionBox from '../action-box/ActionBox';
+import favIcon from '../assets/images/logo.svg';
 import Footer from '../footer/Footer';
 import InvestorBadge from '../investor-badge/InvestorBadge';
 import { allInvestors } from '../investor-badge/investors';
@@ -55,7 +56,7 @@ const Home: NextPage = () => {
                     name="description"
                     content="Creating Foundational Infrastructure For Web3.0"
                 />
-                <link rel="icon" href="/logo.svg" />
+                <link rel="icon" href={favIcon.src} />
             </Head>
 
             <TopNavHeader />

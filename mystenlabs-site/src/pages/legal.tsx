@@ -2,6 +2,7 @@ import cl from 'classnames';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
+import favIcon from '../assets/images/logo.svg';
 import Footer from '../footer/Footer';
 import Privacy from '../legal/Privacy';
 import Terms from '../legal/Terms';
@@ -39,7 +40,7 @@ const Legal: NextPage = () => {
                     name="description"
                     content="Creating Foundational Infrastructure For Web3.0"
                 />
-                <link rel="icon" href="/logo.svg" />
+                <link rel="icon" href={favIcon.src} />
             </Head>
             <TopNavHeader />
             <main className="page-main">

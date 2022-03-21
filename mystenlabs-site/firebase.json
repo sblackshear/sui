@@ -8,6 +8,17 @@
                 "source": "/api/subscribe",
                 "function": "emailSubscribe"
             }
+        ],
+        "headers": [
+            {
+                "source": "**/*.@(jpg|jpeg|gif|png|ttf|js|css|webp|svg|woff)",
+                "headers": [
+                    {
+                        "key": "Cache-Control",
+                        "value": "public, max-age=31536000, immutable"
+                    }
+                ]
+            }
         ]
     },
     "functions": {
