@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react';
 
 import Link from '../link/Link';
+import Logo from '../logo/Logo';
 
 import st from './TeamMember.module.scss';
 
@@ -39,7 +40,14 @@ function TeamMember({
                         className={st.img}
                         loading="lazy"
                     />
-                ) : null}
+                ) : (
+                    <Logo
+                        layout="top"
+                        variant="icon"
+                        size="big"
+                        className={st.logo}
+                    />
+                )}
             </div>
             <span className={st.name}>{name}</span>
             <span className={st.position}>{position}</span>

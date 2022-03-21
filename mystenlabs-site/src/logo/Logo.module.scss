@@ -21,6 +21,10 @@
         font-size: 20px;
     }
 
+    .big > & {
+        font-size: 60px;
+    }
+
     .huge > & {
         font-size: 100px;
     }
@@ -31,6 +35,10 @@
 
     .normal > & {
         font-size: 20px;
+    }
+
+    .big > & {
+        font-size: 60px;
     }
 
     .huge > & {
