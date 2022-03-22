@@ -98,7 +98,7 @@ const Home: NextPage = () => {
                             iconBg="blue-pattern"
                             title="Sui"
                             description="Sui is a decentralized, proof of stake blockchain with horizontally scalable throughput and storage."
-                            href="https://sui.io" // TODO: is this correct?
+                            href="https://sui.io"
                             external={true}
                         />
                         <ProductCard
@@ -106,7 +106,7 @@ const Home: NextPage = () => {
                             iconBg="linear-gradient-1"
                             title="Move"
                             description="Move is an open-source programming language for building smart contracts."
-                            href="https://sui.io" // TODO: link to move
+                            href="https://docs.sui.io/build/move"
                             external={true}
                         />
                     </div>

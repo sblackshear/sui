@@ -14,9 +14,8 @@ const SOCIAL_LINKS = [
     { icon: 'github', link: 'https://github.com/MystenLabs' },
 ];
 
-// TODO: links
-const SUI_LINK = '#';
-const MOVE_LINK = '#';
+const SUI_LINK = 'https://sui.io';
+const MOVE_LINK = 'https://docs.sui.io/build/move';
 
 function Footer() {
     const { pathname, query } = useRouter();
