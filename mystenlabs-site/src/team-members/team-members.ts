@@ -134,7 +134,7 @@ const alphabeticalOrder = [
         'https://www.linkedin.com/in/damir-s-151888101/',
         ''
     ),
-    makeTeamMember('Brandon Williams', 'Software Engineer', undefined, '', ''), //****
+    // makeTeamMember('Brandon Williams', 'Software Engineer', undefined, '', ''),
     makeTeamMember(
         'Laura Makdah',
         'Software Engineer',
@@ -178,7 +178,7 @@ const alphabeticalOrder = [
         ''
     ),
     makeTeamMember(
-        'Ade A.',
+        'Ade A',
         'Software Engineer',
         undefined,
         'https://www.linkedin.com/in/ade-ade/',
@@ -191,7 +191,7 @@ const alphabeticalOrder = [
         'https://www.linkedin.com/in/lxfind/',
         ''
     ),
-    makeTeamMember('Todd Nowacki', 'Software Engineer', undefined, '', ''), // ***
+    makeTeamMember('Todd Nowacki', 'Software Engineer', undefined, '', ''),
     makeTeamMember(
         'Rob Fullen',
         'Executive Assistant',
@@ -249,7 +249,7 @@ const alphabeticalOrder = [
         'https://twitter.com/chrisliweb3'
     ),
     makeTeamMember(
-        'Jen Kye',
+        'Jennifer Kye',
         'Head of Social',
         jenniferKye.src,
         'https://www.linkedin.com/in/jhkye/',
@@ -263,6 +263,13 @@ const alphabeticalOrder = [
         'https://twitter.com/LefKok'
     ),
     makeTeamMember('Ben Holcomb', 'Product Manager', undefined, '', ''),
+    makeTeamMember(
+        'Kyle Qian',
+        'Developer Relations',
+        undefined,
+        'https://www.linkedin.com/in/kyleqian/',
+        'https://twitter.com/qualiaspace'
+    ),
 ];
 
 export const teamMembers = [

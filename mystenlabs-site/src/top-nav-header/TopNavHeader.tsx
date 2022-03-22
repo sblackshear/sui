@@ -19,7 +19,7 @@ const LINKS = [
     makeLink('Careers', 'https://jobs.lever.co/mystenlabs'),
 ];
 
-const DISCORD_LINK = 'https://discord.gg/Tcfn7UdmAc';
+const DISCORD_LINK = 'https://discord.gg/mysten';
 
 function TopNavHeader() {
     const [isMenuOpen, setMenuOpen] = useState(false);
