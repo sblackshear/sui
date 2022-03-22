@@ -14,6 +14,12 @@ use tracing::*;
 
 use std::io;
 use tokio::time;
+use tokio::sync::{
+    oneshot::Receiver as oneshotReceiver,
+    mpsc::{channel,Receiver}
+};
+use tokio::task::JoinHandle;
+
 
 #[derive(Clone)]
 pub struct NetworkClient {
@@ -38,6 +44,58 @@ impl NetworkClient {
             buffer_size,
             send_timeout,
             recv_timeout,
+        }
+    }
+
+    async fn send_recv_stream_internal(&mut self, buf: Vec<u8>, rx_cancellation: oneshotReceiver<()>) -> Result<Receiver<Option<Vec<u8>>>, io::Error> {
+        let address = format!("{}:{}", self.base_address, self.base_port);
+        let mut stream = connect(address, self.buffer_size).await?;
+        // Send message
+        time::timeout(self.send_timeout, stream.write_data(&buf)).await??;
+        let (tx_output, tr_output) = channel(100);
+        let inflight_stream = tokio::spawn(async move {
+                tokio::select! {
+                    _ = rx_cancellation => {}
+                    _ = async {
+                        loop {
+                            // make a call to read_data and send it on the returned channel
+
+                            let res = time::timeout(self.recv_timeout, async {
+                                stream.read_data().await.transpose()
+                            })
+                            .await.unwrap(); // TODO: what is the correct action on timeout?
+
+                            match res {
+                                Ok(data) => {
+                                    tx_output.send(data);
+                                }
+                                _ => {} // TODO: batch and return errors or attach error via result?
+                            }
+                    }
+                } => {}
+            }
+        }); // TODO: where to store the inflight streams?
+        // self.inflight_streams.push(inflight_stream);
+        return Ok(tr_output);
+    }
+
+    pub async fn send_recv_bytes_stream(&self, buf: Vec<u8>) -> Result<SerializedMessage, SuiError> {
+        match self.send_recv_bytes_internal(buf).await {
+            Err(error) => Err(SuiError::ClientIoError {
+                error: format!("{}", error),
+            }),
+            Ok(Some(response)) => {
+                // Parse reply
+                match deserialize_message(&response[..]) {
+                    Ok(SerializedMessage::Error(error)) => Err(*error),
+                    Ok(message) => Ok(message),
+                    Err(_) => Err(SuiError::InvalidDecoding),
+                    // _ => Err(SuiError::UnexpectedMessage),
+                }
+            }
+            Ok(None) => Err(SuiError::ClientIoError {
+                error: "Empty response from authority.".to_string(),
+            }),
         }
     }
 
