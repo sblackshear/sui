@@ -281,9 +281,10 @@ impl CoinReadApiServer for CoinReadApi {
                 .collect::<Vec<_>>(),
         )?;
         for coin_obj in coin_objs {
-            // unwraps safe because get_owner_coin_iterator can only return coin objects
+            // unwrap safe because get_owner_coin_iterator can only return coin objects
             let move_obj = coin_obj.data.try_as_move().unwrap();
-            let coin_type = move_obj.type_();
+            // unwrap safe because each coin object has one type param
+            let coin_type = move_obj.type_().type_params().first().unwrap();
             let coin: Coin = bcs::from_bytes(move_obj.contents()).unwrap();
 
             let balance = balances.entry(coin_type.clone()).or_insert(Balance {
