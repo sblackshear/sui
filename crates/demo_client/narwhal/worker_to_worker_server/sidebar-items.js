@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["WorkerToWorkerServer","_Inner"],"trait":["WorkerToWorker"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["SUI_COIN_TYPE"],"mod":["apis","error","sui_client_config","wallet_context"],"struct":["SuiClient","SuiClientBuilder"]};

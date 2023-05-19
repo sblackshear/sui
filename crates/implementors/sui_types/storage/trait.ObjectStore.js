@@ -1,0 +1,5 @@
+(function() {var implementors = {
+"sui_core":[["impl <a class=\"trait\" href=\"sui_types/storage/trait.ObjectStore.html\" title=\"trait sui_types::storage::ObjectStore\">ObjectStore</a> for <a class=\"struct\" href=\"sui_core/authority/struct.AuthorityStore.html\" title=\"struct sui_core::authority::AuthorityStore\">AuthorityStore</a>"],["impl <a class=\"trait\" href=\"sui_types/storage/trait.ObjectStore.html\" title=\"trait sui_types::storage::ObjectStore\">ObjectStore</a> for <a class=\"struct\" href=\"sui_core/authority/authority_store_tables/struct.AuthorityPerpetualTables.html\" title=\"struct sui_core::authority::authority_store_tables::AuthorityPerpetualTables\">AuthorityPerpetualTables</a>"]],
+"sui_indexer":[["impl <a class=\"trait\" href=\"sui_types/storage/trait.ObjectStore.html\" title=\"trait sui_types::storage::ObjectStore\">ObjectStore</a> for <a class=\"struct\" href=\"sui_indexer/store/struct.CheckpointData.html\" title=\"struct sui_indexer::store::CheckpointData\">CheckpointData</a>"]],
+"sui_types":[]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

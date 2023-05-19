@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ConsensusTransactionKey","ConsensusTransactionKind"],"struct":["AuthorityCapabilities","ConsensusCommitPrologue","ConsensusTransaction"]};

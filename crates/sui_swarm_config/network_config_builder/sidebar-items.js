@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["CommitteeConfig","ProtocolVersionsConfig"],"struct":["ConfigBuilder","FullnodeConfigBuilder"],"type":["SupportedProtocolVersionsCallback"]};

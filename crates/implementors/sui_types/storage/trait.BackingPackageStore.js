@@ -1,0 +1,5 @@
+(function() {var implementors = {
+"sui_core":[["impl <a class=\"trait\" href=\"sui_types/storage/trait.BackingPackageStore.html\" title=\"trait sui_types::storage::BackingPackageStore\">BackingPackageStore</a> for <a class=\"struct\" href=\"sui_core/authority/struct.AuthorityStore.html\" title=\"struct sui_core::authority::AuthorityStore\">AuthorityStore</a>"]],
+"sui_storage":[["impl&lt;S: <a class=\"trait\" href=\"sui_types/storage/trait.ObjectStore.html\" title=\"trait sui_types::storage::ObjectStore\">ObjectStore</a>&gt; <a class=\"trait\" href=\"sui_types/storage/trait.BackingPackageStore.html\" title=\"trait sui_types::storage::BackingPackageStore\">BackingPackageStore</a> for <a class=\"struct\" href=\"sui_storage/package_object_cache/struct.PackageObjectCache.html\" title=\"struct sui_storage::package_object_cache::PackageObjectCache\">PackageObjectCache</a>&lt;S&gt;"]],
+"sui_types":[]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

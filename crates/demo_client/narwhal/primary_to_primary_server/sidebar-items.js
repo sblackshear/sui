@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["PrimaryToPrimaryServer","_Inner"],"trait":["PrimaryToPrimary"]};

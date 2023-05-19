@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["GAS_VALUE_FOR_TESTING","ID_END_INDEX","OBJECT_START_VERSION"],"enum":["Data","ObjectRead","Owner","PastObjectRead"],"fn":["generate_max_test_gas_objects_with_owner","generate_test_gas_objects","generate_test_gas_objects_with_owner","generate_test_gas_objects_with_owner_and_value"],"struct":["MoveObject","Object","ObjectFormatOptions"]};

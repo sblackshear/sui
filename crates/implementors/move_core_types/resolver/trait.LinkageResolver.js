@@ -1,0 +1,3 @@
+(function() {var implementors = {
+"sui_adapter_latest":[["impl&lt;S: BackingPackageStore&gt; LinkageResolver for <a class=\"struct\" href=\"sui_adapter_latest/programmable_transactions/linkage_view/struct.LinkageView.html\" title=\"struct sui_adapter_latest::programmable_transactions::linkage_view::LinkageView\">LinkageView</a>&lt;S&gt;"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
