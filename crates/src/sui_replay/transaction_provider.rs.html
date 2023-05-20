@@ -105,6 +105,58 @@
 <a href="#105" id="105">105</a>
 <a href="#106" id="106">106</a>
 <a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
+<a href="#152" id="152">152</a>
+<a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
+<a href="#157" id="157">157</a>
+<a href="#158" id="158">158</a>
+<a href="#159" id="159">159</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -112,10 +164,13 @@
     data_fetcher::{DataFetcher, RemoteFetcher},
     types::{ReplayEngineError, MAX_CONCURRENT_REQUESTS, RPC_TIMEOUT_ERR_SLEEP_RETRY_PERIOD},
 };
-<span class="kw">use </span>std::fmt::Debug;
 <span class="kw">use </span>std::{collections::VecDeque, fmt::Formatter};
+<span class="kw">use </span>std::{fmt::Debug, str::FromStr};
 <span class="kw">use </span>sui_sdk::SuiClientBuilder;
 <span class="kw">use </span>sui_types::digests::TransactionDigest;
+<span class="kw">use </span>tracing::info;
+
+<span class="kw">const </span>VALID_CHECKPOINT_START: u64 = <span class="number">1</span>;
 
 <span class="attr">#[derive(Clone, Debug)]
 </span><span class="kw">pub enum </span>TransactionSource {
@@ -124,7 +179,7 @@
     <span class="doccomment">/// Fetch a transaction from the network with a specific checkpoint ID
     </span>FromCheckpoint(u64),
     <span class="doccomment">/// Use the latest transaction from the network
-    </span>TailLatest { start_checkpoint: <span class="prelude-ty">Option</span>&lt;u64&gt; },
+    </span>TailLatest { start: <span class="prelude-ty">Option</span>&lt;FuzzStartPoint&gt; },
     <span class="doccomment">/// Use a random transaction from an inclusive range of checkpoint IDs
     </span>FromInclusiveCheckpointRange {
         checkpoint_start: u64,
@@ -138,6 +193,29 @@
     <span class="kw">pub </span>source: TransactionSource,
     <span class="kw">pub </span>last_checkpoint: <span class="prelude-ty">Option</span>&lt;u64&gt;,
     <span class="kw">pub </span>transactions_left: VecDeque&lt;TransactionDigest&gt;,
+}
+
+<span class="attr">#[derive(Eq, PartialEq, Clone, Copy, PartialOrd, Ord, Hash, Debug)]
+</span><span class="kw">pub enum </span>FuzzStartPoint {
+    Checkpoint(u64),
+    TxDigest(TransactionDigest),
+}
+
+<span class="kw">impl </span>FromStr <span class="kw">for </span>FuzzStartPoint {
+    <span class="kw">type </span><span class="prelude-val">Err </span>= anyhow::Error;
+
+    <span class="kw">fn </span>from_str(s: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Err&gt; {
+        <span class="kw">match </span>s.parse::&lt;u64&gt;() {
+            <span class="prelude-val">Ok</span>(n) =&gt; <span class="prelude-val">Ok</span>(FuzzStartPoint::Checkpoint(n)),
+            <span class="prelude-val">Err</span>(u64_err) =&gt; <span class="kw">match </span>TransactionDigest::from_str(s) {
+                <span class="prelude-val">Ok</span>(d) =&gt; <span class="prelude-val">Ok</span>(FuzzStartPoint::TxDigest(d)),
+                <span class="prelude-val">Err</span>(tx_err) =&gt; {
+                    <span class="macro">info!</span>(<span class="string">&quot;{} is not a valid checkpoint (err: {:?}) or transaction digest (err: {:?})&quot;</span>, s, u64_err, tx_err);
+                    <span class="prelude-val">Err</span>(tx_err)
+                }
+            },
+        }
+    }
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>TransactionProvider {
@@ -169,7 +247,7 @@
     }
 
     <span class="kw">pub async fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;TransactionDigest&gt;, ReplayEngineError&gt; {
-        <span class="kw">let </span>tx = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.source {
+        <span class="kw">let </span>tx = <span class="kw">match </span><span class="self">self</span>.source {
             TransactionSource::Random =&gt; {
                 <span class="kw">let </span>tx = <span class="self">self</span>.fetcher.fetch_random_transaction(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>).<span class="kw">await</span><span class="question-mark">?</span>;
                 <span class="prelude-val">Some</span>(tx)
@@ -177,17 +255,43 @@
             TransactionSource::FromCheckpoint(checkpoint_id) =&gt; {
                 <span class="kw">let </span>tx = <span class="self">self
                     </span>.fetcher
-                    .fetch_random_transaction(<span class="prelude-val">Some</span>(<span class="kw-2">*</span>checkpoint_id), <span class="prelude-val">Some</span>(<span class="kw-2">*</span>checkpoint_id))
+                    .fetch_random_transaction(<span class="prelude-val">Some</span>(checkpoint_id), <span class="prelude-val">Some</span>(checkpoint_id))
                     .<span class="kw">await</span><span class="question-mark">?</span>;
                 <span class="prelude-val">Some</span>(tx)
             }
-            TransactionSource::TailLatest { start_checkpoint } =&gt; {
+            TransactionSource::TailLatest { start } =&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(tx) = <span class="self">self</span>.transactions_left.pop_front() {
                     <span class="prelude-val">Some</span>(tx)
                 } <span class="kw">else </span>{
-                    <span class="kw">let </span>next_checkpoint =
-                    <span class="comment">// Advance to next checkpoint
-                    </span><span class="self">self</span>.last_checkpoint.map(|c| c + <span class="number">1</span>).unwrap_or(start_checkpoint.unwrap_or(<span class="number">1</span>));
+                    <span class="kw">let </span>next_checkpoint = <span class="kw">match </span>start {
+                        <span class="prelude-val">Some</span>(x) =&gt; <span class="kw">match </span>x {
+                            <span class="comment">// Checkpoint specified
+                            </span>FuzzStartPoint::Checkpoint(checkpoint_id) =&gt; {
+                                <span class="self">self</span>.source = TransactionSource::TailLatest {
+                                    start: <span class="prelude-val">Some</span>(FuzzStartPoint::Checkpoint(checkpoint_id + <span class="number">1</span>)),
+                                };
+                                <span class="prelude-val">Some</span>(checkpoint_id)
+                            }
+                            <span class="comment">// Digest specified. Find the checkpoint for the digest
+                            </span>FuzzStartPoint::TxDigest(tx_digest) =&gt; {
+                                <span class="kw">let </span>ch = <span class="self">self
+                                    </span>.fetcher
+                                    .get_transaction(<span class="kw-2">&amp;</span>tx_digest)
+                                    .<span class="kw">await</span><span class="question-mark">?
+                                    </span>.checkpoint
+                                    .expect(<span class="string">&quot;Transaction must have a checkpoint&quot;</span>);
+                                <span class="comment">// For the next round
+                                </span><span class="self">self</span>.source = TransactionSource::TailLatest {
+                                    start: <span class="prelude-val">Some</span>(FuzzStartPoint::Checkpoint(ch + <span class="number">1</span>)),
+                                };
+                                <span class="prelude-val">Some</span>(ch)
+                            }
+                        },
+                        <span class="comment">// Advance to next checkpoint if available
+                        </span><span class="prelude-val">None </span>=&gt; <span class="self">self</span>.last_checkpoint.map(|c| c + <span class="number">1</span>),
+                    }
+                    .unwrap_or(VALID_CHECKPOINT_START);
+
                     <span class="self">self</span>.transactions_left = <span class="self">self
                         </span>.fetcher
                         .get_checkpoint_txs(next_checkpoint)
@@ -203,7 +307,7 @@
             } =&gt; {
                 <span class="kw">let </span>tx = <span class="self">self
                     </span>.fetcher
-                    .fetch_random_transaction(<span class="prelude-val">Some</span>(<span class="kw-2">*</span>checkpoint_start), <span class="prelude-val">Some</span>(<span class="kw-2">*</span>checkpoint_end))
+                    .fetch_random_transaction(<span class="prelude-val">Some</span>(checkpoint_start), <span class="prelude-val">Some</span>(checkpoint_end))
                     .<span class="kw">await</span><span class="question-mark">?</span>;
                 <span class="prelude-val">Some</span>(tx)
             }

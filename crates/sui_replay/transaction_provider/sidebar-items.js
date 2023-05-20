@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["TransactionSource"],"struct":["TransactionProvider"]};
+window.SIDEBAR_ITEMS = {"enum":["FuzzStartPoint","TransactionSource"],"struct":["TransactionProvider"]};

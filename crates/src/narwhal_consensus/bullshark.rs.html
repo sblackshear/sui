@@ -356,15 +356,12 @@
 <a href="#356" id="356">356</a>
 <a href="#357" id="357">357</a>
 <a href="#358" id="358">358</a>
-<a href="#359" id="359">359</a>
-<a href="#360" id="360">360</a>
-<a href="#361" id="361">361</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) 2021, Facebook, Inc. and its affiliates
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 </span><span class="kw">use </span><span class="kw">crate</span>::metrics::ConsensusMetrics;
 <span class="kw">use crate</span>::{
-    consensus::{ConsensusProtocol, ConsensusState, Dag},
+    consensus::{ConsensusState, Dag},
     utils, ConsensusError, Outcome,
 };
 <span class="kw">use </span>config::{AuthorityIdentifier, Committee, Stake};
@@ -419,8 +416,125 @@
     </span><span class="kw">pub </span>num_sub_dags_per_schedule: u64,
 }
 
-<span class="kw">impl </span>ConsensusProtocol <span class="kw">for </span>Bullshark {
-    <span class="kw">fn </span>process_certificate(
+<span class="kw">impl </span>Bullshark {
+    <span class="doccomment">/// Create a new Bullshark consensus instance.
+    </span><span class="kw">pub fn </span>new(
+        committee: Committee,
+        store: Arc&lt;ConsensusStore&gt;,
+        metrics: Arc&lt;ConsensusMetrics&gt;,
+        num_sub_dags_per_schedule: u64,
+    ) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            committee,
+            store,
+            last_successful_leader_election_timestamp: Instant::now(),
+            last_leader_election: LastRound::default(),
+            max_inserted_certificate_round: <span class="number">0</span>,
+            metrics,
+            num_sub_dags_per_schedule,
+        }
+    }
+
+    <span class="comment">// Returns the PublicKey of the authority which is the leader for the provided `round`.
+    // Pay attention that this method will return always the first authority as the leader
+    // when used under a test environment.
+    </span><span class="kw">pub fn </span>leader_authority(committee: <span class="kw-2">&amp;</span>Committee, round: Round) -&gt; AuthorityIdentifier {
+        <span class="macro">assert_eq!</span>(
+            round % <span class="number">2</span>,
+            <span class="number">0</span>,
+            <span class="string">&quot;We should never attempt to do a leader election for odd rounds&quot;
+        </span>);
+
+        <span class="macro">cfg_if::cfg_if! </span>{
+            <span class="kw">if </span><span class="attr">#[cfg(test)] </span>{
+                <span class="comment">// We apply round robin in leader election. Since we expect round to be an even number,
+                // 2, 4, 6, 8... it can&#39;t work well for leader election as we&#39;ll omit leaders. Thus
+                // we can always divide by 2 to get a monotonically incremented sequence,
+                // 2/2 = 1, 4/2 = 2, 6/2 = 3, 8/2 = 4  etc, and then do minus 1 so we can always
+                // start with base zero 0.
+                </span><span class="kw">let </span>next_leader = (round/<span class="number">2 </span>- <span class="number">1</span>) <span class="kw">as </span>usize % committee.size();
+                <span class="kw">let </span>authorities = committee.authorities().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+
+                authorities.get(next_leader).unwrap().id()
+            } <span class="kw">else </span>{
+                <span class="comment">// Elect the leader in a stake-weighted choice seeded by the round
+                </span>committee.leader(round).id()
+            }
+        }
+    }
+
+    <span class="doccomment">/// Returns the certificate (and the certificate&#39;s digest) originated by the leader of the
+    /// specified round (if any).
+    </span><span class="kw">fn </span>leader&lt;<span class="lifetime">&#39;a</span>&gt;(
+        committee: <span class="kw-2">&amp;</span>Committee,
+        round: Round,
+        dag: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Dag,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>(CertificateDigest, Certificate)&gt; {
+        <span class="comment">// Note: this function is often called with even rounds only. While we do not aim at random selection
+        // yet (see issue #10), repeated calls to this function should still pick from the whole roster of leaders.
+        </span><span class="kw">let </span>leader = <span class="self">Self</span>::leader_authority(committee, round);
+
+        <span class="comment">// Return its certificate and the certificate&#39;s digest.
+        </span>dag.get(<span class="kw-2">&amp;</span>round).and_then(|x| x.get(<span class="kw-2">&amp;</span>leader))
+    }
+
+    <span class="doccomment">/// Calculates the reputation score for the current commit by taking into account the reputation
+    /// scores from the previous commit (assuming that exists). It returns the updated reputation score.
+    </span><span class="kw">fn </span>resolve_reputation_score(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        state: <span class="kw-2">&amp;mut </span>ConsensusState,
+        committed_sequence: <span class="kw-2">&amp;</span>[Certificate],
+        sub_dag_index: u64,
+    ) -&gt; ReputationScores {
+        <span class="comment">// we reset the scores for every schedule change window, or initialise when it&#39;s the first
+        // sub dag we are going to create.
+        // TODO: when schedule change is implemented we should probably change a little bit
+        // this logic here.
+        </span><span class="kw">let </span><span class="kw-2">mut </span>reputation_score =
+            <span class="kw">if </span>sub_dag_index == <span class="number">1 </span>|| sub_dag_index % <span class="self">self</span>.num_sub_dags_per_schedule == <span class="number">0 </span>{
+                ReputationScores::new(<span class="kw-2">&amp;</span><span class="self">self</span>.committee)
+            } <span class="kw">else </span>{
+                state
+                    .last_committed_sub_dag
+                    .as_ref()
+                    .expect(<span class="string">&quot;Committed sub dag should always exist for sub_dag_index &gt; 1&quot;</span>)
+                    .reputation_score
+                    .clone()
+            };
+
+        <span class="comment">// update the score for the previous leader. If no previous leader exists,
+        // then this is the first time we commit a leader, so no score update takes place
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(last_committed_sub_dag) = state.last_committed_sub_dag.as_ref() {
+            <span class="kw">for </span>certificate <span class="kw">in </span>committed_sequence {
+                <span class="comment">// TODO: we could iterate only the certificates of the round above the previous leader&#39;s round
+                </span><span class="kw">if </span>certificate
+                    .header()
+                    .parents()
+                    .iter()
+                    .any(|digest| <span class="kw-2">*</span>digest == last_committed_sub_dag.leader.digest())
+                {
+                    reputation_score.add_score(certificate.origin(), <span class="number">1</span>);
+                }
+            }
+        }
+
+        <span class="comment">// we check if this is the last sub dag of the current schedule. If yes then we mark the
+        // scores as final_of_schedule = true so any downstream user can now that those are the last
+        // ones calculated for the current schedule.
+        </span>reputation_score.final_of_schedule =
+            (sub_dag_index + <span class="number">1</span>) % <span class="self">self</span>.num_sub_dags_per_schedule == <span class="number">0</span>;
+
+        <span class="comment">// Always ensure that all the authorities are present in the reputation scores - even
+        // when score is zero.
+        </span><span class="macro">assert_eq!</span>(
+            reputation_score.total_authorities() <span class="kw">as </span>usize,
+            <span class="self">self</span>.committee.size()
+        );
+
+        reputation_score
+    }
+
+    <span class="kw">pub fn </span>process_certificate(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         state: <span class="kw-2">&amp;mut </span>ConsensusState,
         certificate: Certificate,
@@ -598,126 +712,6 @@
             .report(total_committed_certificates <span class="kw">as </span>u64);
 
         <span class="prelude-val">Ok</span>((Outcome::Commit, committed_sub_dags))
-    }
-}
-
-<span class="kw">impl </span>Bullshark {
-    <span class="doccomment">/// Create a new Bullshark consensus instance.
-    </span><span class="kw">pub fn </span>new(
-        committee: Committee,
-        store: Arc&lt;ConsensusStore&gt;,
-        metrics: Arc&lt;ConsensusMetrics&gt;,
-        num_sub_dags_per_schedule: u64,
-    ) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{
-            committee,
-            store,
-            last_successful_leader_election_timestamp: Instant::now(),
-            last_leader_election: LastRound::default(),
-            max_inserted_certificate_round: <span class="number">0</span>,
-            metrics,
-            num_sub_dags_per_schedule,
-        }
-    }
-
-    <span class="comment">// Returns the PublicKey of the authority which is the leader for the provided `round`.
-    // Pay attention that this method will return always the first authority as the leader
-    // when used under a test environment.
-    </span><span class="kw">pub fn </span>leader_authority(committee: <span class="kw-2">&amp;</span>Committee, round: Round) -&gt; AuthorityIdentifier {
-        <span class="macro">assert_eq!</span>(
-            round % <span class="number">2</span>,
-            <span class="number">0</span>,
-            <span class="string">&quot;We should never attempt to do a leader election for odd rounds&quot;
-        </span>);
-
-        <span class="macro">cfg_if::cfg_if! </span>{
-            <span class="kw">if </span><span class="attr">#[cfg(test)] </span>{
-                <span class="comment">// We apply round robin in leader election. Since we expect round to be an even number,
-                // 2, 4, 6, 8... it can&#39;t work well for leader election as we&#39;ll omit leaders. Thus
-                // we can always divide by 2 to get a monotonically incremented sequence,
-                // 2/2 = 1, 4/2 = 2, 6/2 = 3, 8/2 = 4  etc, and then do minus 1 so we can always
-                // start with base zero 0.
-                </span><span class="kw">let </span>next_leader = (round/<span class="number">2 </span>- <span class="number">1</span>) <span class="kw">as </span>usize % committee.size();
-                <span class="kw">let </span>authorities = committee.authorities().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
-
-                authorities.get(next_leader).unwrap().id()
-            } <span class="kw">else </span>{
-                <span class="comment">// Elect the leader in a stake-weighted choice seeded by the round
-                </span>committee.leader(round).id()
-            }
-        }
-    }
-
-    <span class="comment">// TODO: duplicated in tusk.rs
-    </span><span class="doccomment">/// Returns the certificate (and the certificate&#39;s digest) originated by the leader of the
-    /// specified round (if any).
-    </span><span class="kw">fn </span>leader&lt;<span class="lifetime">&#39;a</span>&gt;(
-        committee: <span class="kw-2">&amp;</span>Committee,
-        round: Round,
-        dag: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Dag,
-    ) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>(CertificateDigest, Certificate)&gt; {
-        <span class="comment">// Note: this function is often called with even rounds only. While we do not aim at random selection
-        // yet (see issue #10), repeated calls to this function should still pick from the whole roster of leaders.
-        </span><span class="kw">let </span>leader = <span class="self">Self</span>::leader_authority(committee, round);
-
-        <span class="comment">// Return its certificate and the certificate&#39;s digest.
-        </span>dag.get(<span class="kw-2">&amp;</span>round).and_then(|x| x.get(<span class="kw-2">&amp;</span>leader))
-    }
-
-    <span class="doccomment">/// Calculates the reputation score for the current commit by taking into account the reputation
-    /// scores from the previous commit (assuming that exists). It returns the updated reputation score.
-    </span><span class="kw">fn </span>resolve_reputation_score(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        state: <span class="kw-2">&amp;mut </span>ConsensusState,
-        committed_sequence: <span class="kw-2">&amp;</span>[Certificate],
-        sub_dag_index: u64,
-    ) -&gt; ReputationScores {
-        <span class="comment">// we reset the scores for every schedule change window, or initialise when it&#39;s the first
-        // sub dag we are going to create.
-        // TODO: when schedule change is implemented we should probably change a little bit
-        // this logic here.
-        </span><span class="kw">let </span><span class="kw-2">mut </span>reputation_score =
-            <span class="kw">if </span>sub_dag_index == <span class="number">1 </span>|| sub_dag_index % <span class="self">self</span>.num_sub_dags_per_schedule == <span class="number">0 </span>{
-                ReputationScores::new(<span class="kw-2">&amp;</span><span class="self">self</span>.committee)
-            } <span class="kw">else </span>{
-                state
-                    .last_committed_sub_dag
-                    .as_ref()
-                    .expect(<span class="string">&quot;Committed sub dag should always exist for sub_dag_index &gt; 1&quot;</span>)
-                    .reputation_score
-                    .clone()
-            };
-
-        <span class="comment">// update the score for the previous leader. If no previous leader exists,
-        // then this is the first time we commit a leader, so no score update takes place
-        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(last_committed_sub_dag) = state.last_committed_sub_dag.as_ref() {
-            <span class="kw">for </span>certificate <span class="kw">in </span>committed_sequence {
-                <span class="comment">// TODO: we could iterate only the certificates of the round above the previous leader&#39;s round
-                </span><span class="kw">if </span>certificate
-                    .header()
-                    .parents()
-                    .iter()
-                    .any(|digest| <span class="kw-2">*</span>digest == last_committed_sub_dag.leader.digest())
-                {
-                    reputation_score.add_score(certificate.origin(), <span class="number">1</span>);
-                }
-            }
-        }
-
-        <span class="comment">// we check if this is the last sub dag of the current schedule. If yes then we mark the
-        // scores as final_of_schedule = true so any downstream user can now that those are the last
-        // ones calculated for the current schedule.
-        </span>reputation_score.final_of_schedule =
-            (sub_dag_index + <span class="number">1</span>) % <span class="self">self</span>.num_sub_dags_per_schedule == <span class="number">0</span>;
-
-        <span class="comment">// Always ensure that all the authorities are present in the reputation scores - even
-        // when score is zero.
-        </span><span class="macro">assert_eq!</span>(
-            reputation_score.total_authorities() <span class="kw">as </span>usize,
-            <span class="self">self</span>.committee.size()
-        );
-
-        reputation_score
     }
 }
 </code></pre></div></section></main></body></html>

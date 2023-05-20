@@ -255,6 +255,23 @@
 <a href="#255" id="255">255</a>
 <a href="#256" id="256">256</a>
 <a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -275,6 +292,8 @@
 <span class="kw">use </span>thiserror::Error;
 <span class="kw">use </span>tokio::time::Duration;
 <span class="kw">use </span>tracing::error;
+
+<span class="kw">use </span><span class="kw">crate</span>::config::ReplayableNetworkConfigSet;
 
 <span class="comment">// TODO: make these configurable
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>RPC_TIMEOUT_ERR_SLEEP_RETRY_PERIOD: Duration = Duration::from_millis(<span class="number">10_000</span>);
@@ -413,6 +432,21 @@
 
     <span class="attr">#[error(<span class="string">&quot;Unsupported epoch in replay engine: {epoch}&quot;</span>)]
     </span>EpochNotSupported { epoch: u64 },
+
+    <span class="attr">#[error(<span class="string">&quot;Unable to open yaml cfg file at {}: {}&quot;</span>, path, err)]
+    </span>UnableToOpenYamlFile { path: String, err: String },
+
+    <span class="attr">#[error(<span class="string">&quot;Unable to write yaml file at {}: {}&quot;</span>, path, err)]
+    </span>UnableToWriteYamlFile { path: String, err: String },
+
+    <span class="attr">#[error(<span class="string">&quot;Unable to convert string {} to URL {}&quot;</span>, url, err)]
+    </span>InvalidUrl { url: String, err: String },
+
+    <span class="attr">#[error(
+        <span class="string">&quot;Unable to execute transaction with existing network configs {:#?}&quot;</span>,
+        cfgs
+    )]
+    </span>UnableToExecuteWithNetworkConfigs { cfgs: ReplayableNetworkConfigSet },
 }
 
 <span class="kw">impl </span>From&lt;SuiObjectResponseError&gt; <span class="kw">for </span>ReplayEngineError {

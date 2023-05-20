@@ -4196,6 +4196,7 @@
 <a href="#4196" id="4196">4196</a>
 <a href="#4197" id="4197">4197</a>
 <a href="#4198" id="4198">4198</a>
+<a href="#4199" id="4199">4199</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) 2021, Facebook, Inc. and its affiliates
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
@@ -4263,6 +4264,7 @@
     default_hash, AggregateAuthoritySignature, AuthorityKeyPair, AuthoritySignInfo, NetworkKeyPair,
     Signer,
 };
+<span class="kw">use </span>sui_types::digests::ChainIdentifier;
 <span class="kw">use </span>sui_types::digests::TransactionEventsDigest;
 <span class="kw">use </span>sui_types::dynamic_field::{DynamicFieldInfo, DynamicFieldName, DynamicFieldType, Field};
 <span class="kw">use </span>sui_types::effects::{
@@ -4360,7 +4362,7 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>authority_notify_read;
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>authority_store;
 
-<span class="kw">static </span>CHAIN_IDENTIFIER: OnceCell&lt;CheckpointDigest&gt; = OnceCell::new();
+<span class="kw">static </span>CHAIN_IDENTIFIER: OnceCell&lt;ChainIdentifier&gt; = OnceCell::new();
 
 <span class="kw">pub type </span>ReconfigConsensusMessage = (
     AuthorityKeyPair,
@@ -6495,7 +6497,7 @@
     }
 
     <span class="doccomment">/// Chain Identifier is the digest of the genesis checkpoint.
-    </span><span class="kw">pub fn </span>get_chain_identifier(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;CheckpointDigest&gt; {
+    </span><span class="kw">pub fn </span>get_chain_identifier(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ChainIdentifier&gt; {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(digest) = CHAIN_IDENTIFIER.get() {
             <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="kw-2">*</span>digest);
         }
@@ -6506,8 +6508,8 @@
             .ok()<span class="question-mark">?
             </span>.tap_none(|| <span class="macro">error!</span>(<span class="string">&quot;Genesis checkpoint is missing from DB&quot;</span>))<span class="question-mark">?</span>;
         <span class="comment">// It&#39;s ok if the value is already set due to data races.
-        </span><span class="kw">let _ </span>= CHAIN_IDENTIFIER.set(<span class="kw-2">*</span>checkpoint.digest());
-        <span class="prelude-val">Some</span>(<span class="kw-2">*</span>checkpoint.digest())
+        </span><span class="kw">let _ </span>= CHAIN_IDENTIFIER.set(ChainIdentifier::from(<span class="kw-2">*</span>checkpoint.digest()));
+        <span class="prelude-val">Some</span>(ChainIdentifier::from(<span class="kw-2">*</span>checkpoint.digest()))
     }
 
     <span class="kw">pub fn </span>get_move_object&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, object_id: <span class="kw-2">&amp;</span>ObjectID) -&gt; SuiResult&lt;T&gt;

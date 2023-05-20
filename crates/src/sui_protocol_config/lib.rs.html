@@ -1416,18 +1416,6 @@
 <a href="#1416" id="1416">1416</a>
 <a href="#1417" id="1417">1417</a>
 <a href="#1418" id="1418">1418</a>
-<a href="#1419" id="1419">1419</a>
-<a href="#1420" id="1420">1420</a>
-<a href="#1421" id="1421">1421</a>
-<a href="#1422" id="1422">1422</a>
-<a href="#1423" id="1423">1423</a>
-<a href="#1424" id="1424">1424</a>
-<a href="#1425" id="1425">1425</a>
-<a href="#1426" id="1426">1426</a>
-<a href="#1427" id="1427">1427</a>
-<a href="#1428" id="1428">1428</a>
-<a href="#1429" id="1429">1429</a>
-<a href="#1430" id="1430">1430</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -2134,27 +2122,6 @@
     }
 }
 
-<span class="comment">// Special getters
-</span><span class="kw">impl </span>ProtocolConfig {
-    <span class="doccomment">/// We don&#39;t want to use the default getter which unwraps and could panic.
-    /// Instead we want to be able to selectively fetch this value
-    </span><span class="kw">pub fn </span>max_size_written_objects_as_option(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u64&gt; {
-        <span class="self">self</span>.max_size_written_objects
-    }
-
-    <span class="doccomment">/// We don&#39;t want to use the default getter which unwraps and could panic.
-    /// Instead we want to be able to selectively fetch this value
-    </span><span class="kw">pub fn </span>max_size_written_objects_system_tx_as_option(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u64&gt; {
-        <span class="self">self</span>.max_size_written_objects_system_tx
-    }
-
-    <span class="doccomment">/// We don&#39;t want to use the default getter which unwraps and could panic.
-    /// Instead we want to be able to selectively fetch this value
-    </span><span class="kw">pub fn </span>max_move_identifier_len_as_option(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u64&gt; {
-        <span class="self">self</span>.max_move_identifier_len
-    }
-}
-
 <span class="attr">#[cfg(not(msim))]
 </span><span class="kw">static </span>POISON_VERSION_METHODS: AtomicBool = AtomicBool::new(<span class="bool-val">false</span>);
 
@@ -2740,6 +2707,15 @@
                 ProtocolConfig::get_for_version(cur)
             );
         }
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_getters() {
+        <span class="kw">let </span>prot: ProtocolConfig = ProtocolConfig::get_for_version(ProtocolVersion::new(<span class="number">1</span>));
+        <span class="macro">assert_eq!</span>(
+            prot.max_arguments(),
+            prot.max_arguments_as_option().unwrap()
+        );
     }
 
     <span class="attr">#[test]

@@ -377,6 +377,10 @@
 <a href="#377" id="377">377</a>
 <a href="#378" id="378">378</a>
 <a href="#379" id="379">379</a>
+<a href="#380" id="380">380</a>
+<a href="#381" id="381">381</a>
+<a href="#382" id="382">382</a>
+<a href="#383" id="383">383</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -547,11 +551,13 @@
     <span class="attr">#[clap(name = <span class="string">&quot;replay&quot;</span>)]
     </span>Replay {
         <span class="attr">#[clap(long = <span class="string">&quot;rpc&quot;</span>)]
-        </span>rpc_url: String,
+        </span>rpc_url: <span class="prelude-ty">Option</span>&lt;String&gt;,
         <span class="attr">#[clap(long = <span class="string">&quot;safety-checks&quot;</span>)]
         </span>safety_checks: bool,
         <span class="attr">#[clap(long = <span class="string">&quot;authority&quot;</span>)]
         </span>use_authority: bool,
+        <span class="attr">#[clap(long = <span class="string">&quot;cfg-path&quot;</span>, short)]
+        </span>cfg_path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
         <span class="attr">#[clap(subcommand)]
         </span>cmd: ReplayToolCommand,
     },
@@ -733,8 +739,10 @@
                 safety_checks,
                 cmd,
                 use_authority,
+                cfg_path,
             } =&gt; {
-                execute_replay_command(rpc_url, safety_checks, use_authority, cmd).<span class="kw">await</span><span class="question-mark">?</span>;
+                execute_replay_command(rpc_url, safety_checks, use_authority, cfg_path, cmd)
+                    .<span class="kw">await</span><span class="question-mark">?</span>;
             }
             ToolCommand::SignTransaction {
                 genesis,

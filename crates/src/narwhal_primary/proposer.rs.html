@@ -661,31 +661,10 @@
 <a href="#661" id="661">661</a>
 <a href="#662" id="662">662</a>
 <a href="#663" id="663">663</a>
-<a href="#664" id="664">664</a>
-<a href="#665" id="665">665</a>
-<a href="#666" id="666">666</a>
-<a href="#667" id="667">667</a>
-<a href="#668" id="668">668</a>
-<a href="#669" id="669">669</a>
-<a href="#670" id="670">670</a>
-<a href="#671" id="671">671</a>
-<a href="#672" id="672">672</a>
-<a href="#673" id="673">673</a>
-<a href="#674" id="674">674</a>
-<a href="#675" id="675">675</a>
-<a href="#676" id="676">676</a>
-<a href="#677" id="677">677</a>
-<a href="#678" id="678">678</a>
-<a href="#679" id="679">679</a>
-<a href="#680" id="680">680</a>
-<a href="#681" id="681">681</a>
-<a href="#682" id="682">682</a>
-<a href="#683" id="683">683</a>
-<a href="#684" id="684">684</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright(C) Facebook, Inc. and its affiliates.
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
-</span><span class="kw">use crate</span>::{metrics::PrimaryMetrics, NetworkModel};
+</span><span class="kw">use </span><span class="kw">crate</span>::metrics::PrimaryMetrics;
 <span class="kw">use </span>config::{AuthorityIdentifier, Committee, Epoch, WorkerId};
 <span class="kw">use </span>fastcrypto::hash::Hash <span class="kw">as _</span>;
 <span class="kw">use </span>mysten_metrics::spawn_logged_monitored_task;
@@ -743,8 +722,6 @@
     /// hasn&#39;t proposed anything new since then. If None is provided then the
     /// default value will be used instead.
     </span>header_resend_timeout: <span class="prelude-ty">Option</span>&lt;Duration&gt;,
-    <span class="doccomment">/// The network model in which the node operates.
-    </span>network_model: NetworkModel,
 
     <span class="doccomment">/// Receiver for shutdown.
     </span>rx_shutdown: ConditionalBroadcastReceiver,
@@ -794,7 +771,6 @@
         max_header_delay: Duration,
         min_header_delay: Duration,
         header_resend_timeout: <span class="prelude-ty">Option</span>&lt;Duration&gt;,
-        network_model: NetworkModel,
         rx_shutdown: ConditionalBroadcastReceiver,
         rx_parents: Receiver&lt;(Vec&lt;Certificate&gt;, Round, Epoch)&gt;,
         rx_our_digests: Receiver&lt;OurDigestMessage&gt;,
@@ -814,7 +790,7 @@
                     max_header_delay,
                     min_header_delay,
                     header_resend_timeout,
-                    network_model,
+
                     rx_shutdown,
                     rx_parents,
                     rx_our_digests,
@@ -998,35 +974,25 @@
     }
 
     <span class="kw">fn </span>max_delay(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Duration {
-        <span class="kw">match </span><span class="self">self</span>.network_model {
-            <span class="comment">// In partial synchrony, if this node is going to be the leader of the next
-            // round, we set a lower max timeout value to increase its chance of committing
-            // the leader.
-            </span>NetworkModel::PartiallySynchronous
-                <span class="kw">if </span><span class="self">self</span>.committee.leader(<span class="self">self</span>.round + <span class="number">1</span>).id() == <span class="self">self</span>.authority_id =&gt;
-            {
-                <span class="self">self</span>.max_header_delay / <span class="number">2
-            </span>}
-
-            <span class="comment">// Otherwise we keep the default timeout value.
-            </span><span class="kw">_ </span>=&gt; <span class="self">self</span>.max_header_delay,
+        <span class="comment">// If this node is going to be the leader of the next round, we set a lower max
+        // timeout value to increase its chance of being included in the dag.
+        </span><span class="kw">if </span><span class="self">self</span>.committee.leader(<span class="self">self</span>.round + <span class="number">1</span>).id() == <span class="self">self</span>.authority_id {
+            <span class="self">self</span>.max_header_delay / <span class="number">2
+        </span>} <span class="kw">else </span>{
+            <span class="self">self</span>.max_header_delay
         }
     }
 
     <span class="kw">fn </span>min_delay(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Duration {
-        <span class="kw">match </span><span class="self">self</span>.network_model {
-            <span class="comment">// In partial synchrony, if this node is going to be the leader of the next
-            // round and there are more than 1 primary in the committee, we use a lower
-            // min delay value to increase the chance of committing the leader.
-            </span>NetworkModel::PartiallySynchronous
-                <span class="kw">if </span><span class="self">self</span>.committee.size() &gt; <span class="number">1
-                    </span>&amp;&amp; <span class="self">self</span>.committee.leader(<span class="self">self</span>.round + <span class="number">1</span>).id() == <span class="self">self</span>.authority_id =&gt;
-            {
-                Duration::ZERO
-            }
-
-            <span class="comment">// Otherwise we keep the default timeout value.
-            </span><span class="kw">_ </span>=&gt; <span class="self">self</span>.min_header_delay,
+        <span class="comment">// If this node is going to be the leader of the next round and there are more than
+        // 1 primary in the committee, we use a lower min delay value to increase the chance
+        // of committing the leader.
+        </span><span class="kw">if </span><span class="self">self</span>.committee.size() &gt; <span class="number">1
+            </span>&amp;&amp; <span class="self">self</span>.committee.leader(<span class="self">self</span>.round + <span class="number">1</span>).id() == <span class="self">self</span>.authority_id
+        {
+            Duration::ZERO
+        } <span class="kw">else </span>{
+            <span class="self">self</span>.min_header_delay
         }
     }
 
@@ -1084,18 +1050,12 @@
         enough_votes
     }
 
-    <span class="doccomment">/// Whether we can advance the DAG or need to wait for the leader/more votes. This is only relevant in
-    /// partial synchrony. Note that if we timeout, we ignore this check and advance anyway.
+    <span class="doccomment">/// Whether we can advance the DAG or need to wait for the leader/more votes.
+    /// Note that if we timeout, we ignore this check and advance anyway.
     </span><span class="kw">fn </span>ready(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; bool {
-        <span class="kw">match </span><span class="self">self</span>.network_model {
-            <span class="comment">// In asynchrony we advance immediately.
-            </span>NetworkModel::Asynchronous =&gt; <span class="bool-val">true</span>,
-
-            <span class="comment">// In partial synchrony, we need to wait for the leader or for enough votes.
-            </span>NetworkModel::PartiallySynchronous =&gt; <span class="kw">match </span><span class="self">self</span>.round % <span class="number">2 </span>{
-                <span class="number">0 </span>=&gt; <span class="self">self</span>.update_leader(),
-                <span class="kw">_ </span>=&gt; <span class="self">self</span>.enough_votes(),
-            },
+        <span class="kw">match </span><span class="self">self</span>.round % <span class="number">2 </span>{
+            <span class="number">0 </span>=&gt; <span class="self">self</span>.update_leader(),
+            <span class="kw">_ </span>=&gt; <span class="self">self</span>.enough_votes(),
         }
     }
 
@@ -1136,9 +1096,7 @@
             <span class="kw">if </span>(max_delay_timed_out || ((enough_digests || min_delay_timed_out) &amp;&amp; advance))
                 &amp;&amp; enough_parents
             {
-                <span class="kw">if </span>max_delay_timed_out
-                    &amp;&amp; <span class="macro">matches!</span>(<span class="self">self</span>.network_model, NetworkModel::PartiallySynchronous)
-                {
+                <span class="kw">if </span>max_delay_timed_out {
                     <span class="comment">// It is expected that this timer expires from time to time. If it expires too often, it
                     // either means some validators are Byzantine or that the network is experiencing periods
                     // of asynchrony. In practice, the latter scenario means we misconfigured the parameter

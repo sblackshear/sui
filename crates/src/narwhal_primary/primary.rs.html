@@ -1219,14 +1219,6 @@
 <a href="#1219" id="1219">1219</a>
 <a href="#1220" id="1220">1220</a>
 <a href="#1221" id="1221">1221</a>
-<a href="#1222" id="1222">1222</a>
-<a href="#1223" id="1223">1223</a>
-<a href="#1224" id="1224">1224</a>
-<a href="#1225" id="1225">1225</a>
-<a href="#1226" id="1226">1226</a>
-<a href="#1227" id="1227">1227</a>
-<a href="#1228" id="1228">1228</a>
-<a href="#1229" id="1229">1229</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) 2021, Facebook, Inc. and its affiliates
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
@@ -1316,12 +1308,6 @@
 <span class="doccomment">/// Maximum duration to fetch certificates from local storage.
 </span><span class="kw">const </span>FETCH_CERTIFICATES_MAX_HANDLER_TIME: Duration = Duration::from_secs(<span class="number">10</span>);
 
-<span class="doccomment">/// The network model in which the primary operates.
-</span><span class="kw">pub enum </span>NetworkModel {
-    PartiallySynchronous,
-    Asynchronous,
-}
-
 <span class="kw">pub struct </span>Primary;
 
 <span class="kw">impl </span>Primary {
@@ -1344,7 +1330,6 @@
         rx_committed_certificates: Receiver&lt;(Round, Vec&lt;Certificate&gt;)&gt;,
         rx_consensus_round_updates: watch::Receiver&lt;ConsensusRound&gt;,
         dag: <span class="prelude-ty">Option</span>&lt;Arc&lt;Dag&gt;&gt;,
-        network_model: NetworkModel,
         tx_shutdown: <span class="kw-2">&amp;mut </span>PreSubscribedBroadcastSender,
         tx_committed_certificates: Sender&lt;(Round, Vec&lt;Certificate&gt;)&gt;,
         registry: <span class="kw-2">&amp;</span>Registry,
@@ -1723,7 +1708,6 @@
             parameters.max_header_delay,
             parameters.min_header_delay,
             <span class="prelude-val">None</span>,
-            network_model,
             tx_shutdown.subscribe(),
             rx_parents,
             rx_our_digests,

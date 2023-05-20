@@ -474,7 +474,6 @@
 <a href="#474" id="474">474</a>
 <a href="#475" id="475">475</a>
 <a href="#476" id="476">476</a>
-<a href="#477" id="477">477</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 </span><span class="kw">use </span><span class="kw">crate</span>::metrics::new_registry;
@@ -491,7 +490,7 @@
 <span class="kw">use </span>fastcrypto::traits::{KeyPair <span class="kw">as _</span>, VerifyingKey};
 <span class="kw">use </span>mysten_metrics::{RegistryID, RegistryService};
 <span class="kw">use </span>network::client::NetworkClient;
-<span class="kw">use </span>primary::{NetworkModel, Primary, PrimaryChannelMetrics, NUM_SHUTDOWN_RECEIVERS};
+<span class="kw">use </span>primary::{Primary, PrimaryChannelMetrics, NUM_SHUTDOWN_RECEIVERS};
 <span class="kw">use </span>prometheus::{IntGauge, Registry};
 <span class="kw">use </span>std::sync::Arc;
 <span class="kw">use </span>std::time::Instant;
@@ -719,7 +718,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>handles = Vec::new();
         <span class="kw">let </span>(tx_consensus_round_updates, rx_consensus_round_updates) =
             watch::channel(ConsensusRound::new(<span class="number">0</span>, <span class="number">0</span>));
-        <span class="kw">let </span>(dag, network_model) = <span class="kw">if </span>!internal_consensus {
+        <span class="kw">let </span>dag = <span class="kw">if </span>!internal_consensus {
             <span class="macro">debug!</span>(<span class="string">&quot;Consensus is disabled: the primary will run w/o Bullshark&quot;</span>);
             <span class="kw">let </span>consensus_metrics = Arc::new(ConsensusMetrics::new(registry));
             <span class="kw">let </span>(handle, dag) = Dag::new(
@@ -731,7 +730,7 @@
 
             handles.push(handle);
 
-            (<span class="prelude-val">Some</span>(Arc::new(dag)), NetworkModel::Asynchronous)
+            <span class="prelude-val">Some</span>(Arc::new(dag))
         } <span class="kw">else </span>{
             <span class="kw">let </span>consensus_handles = <span class="self">Self</span>::spawn_consensus(
                 authority.id(),
@@ -751,8 +750,8 @@
 
             handles.extend(consensus_handles);
 
-            (<span class="prelude-val">None</span>, NetworkModel::PartiallySynchronous)
-        };
+            <span class="prelude-val">None
+        </span>};
 
         <span class="comment">// TODO: the same set of variables are sent to primary, consensus and downstream
         // components. Consider using a holder struct to pass them around.
@@ -775,7 +774,6 @@
             rx_committed_certificates,
             rx_consensus_round_updates,
             dag,
-            network_model,
             tx_shutdown,
             tx_committed_certificates,
             registry,

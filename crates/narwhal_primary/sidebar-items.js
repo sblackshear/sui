@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":["CHANNEL_CAPACITY","NUM_SHUTDOWN_RECEIVERS"],"enum":["NetworkModel"],"mod":["block_synchronizer"],"struct":["BlockRemover","BlockWaiter","EndpointMetrics","GetBlockResponse","Primary","PrimaryChannelMetrics"]};
+window.SIDEBAR_ITEMS = {"constant":["CHANNEL_CAPACITY","NUM_SHUTDOWN_RECEIVERS"],"mod":["block_synchronizer"],"struct":["BlockRemover","BlockWaiter","EndpointMetrics","GetBlockResponse","Primary","PrimaryChannelMetrics"]};

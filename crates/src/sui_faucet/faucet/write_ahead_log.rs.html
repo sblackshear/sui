@@ -246,6 +246,30 @@
 <a href="#246" id="246">246</a>
 <a href="#247" id="247">247</a>
 <a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -258,6 +282,7 @@
 <span class="kw">use </span>typed_store::traits::{TableSummary, TypedStoreDebug};
 <span class="kw">use </span>typed_store::Map;
 
+<span class="kw">use </span>tracing::info;
 <span class="kw">use </span>typed_store_derive::DBMapUtils;
 <span class="kw">use </span>uuid::Uuid;
 
@@ -279,6 +304,7 @@
     <span class="kw">pub </span>recipient: SuiAddress,
     <span class="kw">pub </span>tx: TransactionData,
     <span class="kw">pub </span>retry_count: u64,
+    <span class="kw">pub </span>in_flight: bool,
 }
 
 <span class="kw">impl </span>WriteAheadLog {
@@ -316,6 +342,7 @@
                 recipient,
                 tx,
                 retry_count: <span class="number">0</span>,
+                in_flight: <span class="bool-val">true</span>,
             },
         )
     }
@@ -348,6 +375,27 @@
         <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>entry) = <span class="self">self</span>.log.get(<span class="kw-2">&amp;</span>coin)<span class="question-mark">? </span>{
             entry.retry_count += <span class="number">1</span>;
             <span class="self">self</span>.log.insert(<span class="kw-2">&amp;</span>coin, <span class="kw-2">&amp;</span>entry)<span class="question-mark">?</span>;
+        }
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set_in_flight(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        coin: ObjectID,
+        bool: bool,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;(), TypedStoreError&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>entry) = <span class="self">self</span>.log.get(<span class="kw-2">&amp;</span>coin)<span class="question-mark">? </span>{
+            entry.in_flight = bool;
+            <span class="self">self</span>.log.insert(<span class="kw-2">&amp;</span>coin, <span class="kw-2">&amp;</span>entry)<span class="question-mark">?</span>;
+        } <span class="kw">else </span>{
+            <span class="macro">info!</span>(
+                <span class="question-mark">?</span>coin,
+                <span class="string">&quot;Attempted to set inflight a coin that was not in the WAL.&quot;
+            </span>);
+
+            <span class="kw">return </span><span class="prelude-val">Err</span>(TypedStoreError::RocksDBError(<span class="macro">format!</span>(
+                <span class="string">&quot;Coin object {coin:?} not found in WAL.&quot;
+            </span>)));
         }
         <span class="prelude-val">Ok</span>(())
     }

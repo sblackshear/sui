@@ -308,27 +308,59 @@
 <a href="#308" id="308">308</a>
 <a href="#309" id="309">309</a>
 <a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
+<a href="#335" id="335">335</a>
+<a href="#336" id="336">336</a>
+<a href="#337" id="337">337</a>
+<a href="#338" id="338">338</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 </span><span class="kw">use </span>async_recursion::async_recursion;
 <span class="kw">use </span>clap::Parser;
+<span class="kw">use </span>config::ReplayableNetworkConfigSet;
 <span class="kw">use </span>fuzz::ReplayFuzzer;
 <span class="kw">use </span>fuzz::ReplayFuzzerConfig;
-<span class="kw">use </span>fuzz::ShuffleMutator;
-<span class="kw">use </span>rand::SeedableRng;
+<span class="kw">use </span>fuzz_mutations::base_fuzzers;
 <span class="kw">use </span>sui_types::message_envelope::Message;
-<span class="kw">use </span>transaction_provider::TransactionSource;
+<span class="kw">use </span>tracing::warn;
+<span class="kw">use </span>transaction_provider::{FuzzStartPoint, TransactionSource};
 
 <span class="kw">use </span><span class="kw">crate</span>::replay::LocalExec;
 <span class="kw">use </span><span class="kw">crate</span>::replay::ProtocolVersionSummary;
+<span class="kw">use </span>std::path::PathBuf;
 <span class="kw">use </span>std::str::FromStr;
 <span class="kw">use </span>sui_config::node::ExpensiveSafetyCheckConfig;
 <span class="kw">use </span>sui_types::digests::TransactionDigest;
 <span class="kw">use </span>tracing::{error, info};
+<span class="kw">pub mod </span>config;
 <span class="kw">mod </span>data_fetcher;
 <span class="kw">mod </span>db_rider;
 <span class="kw">pub mod </span>fuzz;
+<span class="kw">pub mod </span>fuzz_mutations;
 <span class="kw">mod </span>replay;
 <span class="kw">pub mod </span>transaction_provider;
 <span class="kw">pub mod </span>types;
@@ -336,7 +368,12 @@
 <span class="attr">#[derive(Parser, Clone)]
 #[clap(rename_all = <span class="string">&quot;kebab-case&quot;</span>)]
 </span><span class="kw">pub enum </span>ReplayToolCommand {
-    <span class="attr">#[clap(name = <span class="string">&quot;tx&quot;</span>)]
+    <span class="doccomment">/// Generate a new network config file
+    </span><span class="attr">#[clap(name = <span class="string">&quot;gen&quot;</span>)]
+    </span>GenerateDefaultConfig,
+
+    <span class="doccomment">/// Replay transaction
+    </span><span class="attr">#[clap(name = <span class="string">&quot;tx&quot;</span>)]
     </span>ReplayTransaction {
         <span class="attr">#[clap(long, short)]
         </span>tx_digest: String,
@@ -344,7 +381,8 @@
         </span>show_effects: bool,
     },
 
-    <span class="attr">#[clap(name = <span class="string">&quot;rd&quot;</span>)]
+    <span class="doccomment">/// Replay a transaction from a node state dump
+    </span><span class="attr">#[clap(name = <span class="string">&quot;rd&quot;</span>)]
     </span>ReplayDump {
         <span class="attr">#[clap(long, short)]
         </span>path: String,
@@ -352,7 +390,8 @@
         </span>show_effects: bool,
     },
 
-    <span class="attr">#[clap(name = <span class="string">&quot;ch&quot;</span>)]
+    <span class="doccomment">/// Replay all transactions in a range of checkpoints
+    </span><span class="attr">#[clap(name = <span class="string">&quot;ch&quot;</span>)]
     </span>ReplayCheckpoints {
         <span class="attr">#[clap(long, short)]
         </span>start: u64,
@@ -364,7 +403,8 @@
         </span>max_tasks: u64,
     },
 
-    <span class="attr">#[clap(name = <span class="string">&quot;ep&quot;</span>)]
+    <span class="doccomment">/// Replay all transactions in an epoch
+    </span><span class="attr">#[clap(name = <span class="string">&quot;ep&quot;</span>)]
     </span>ReplayEpoch {
         <span class="attr">#[clap(long, short)]
         </span>epoch: u64,
@@ -374,10 +414,11 @@
         </span>max_tasks: u64,
     },
 
-    <span class="attr">#[clap(name = <span class="string">&quot;fz&quot;</span>)]
+    <span class="doccomment">/// Run the replay based fuzzer
+    </span><span class="attr">#[clap(name = <span class="string">&quot;fz&quot;</span>)]
     </span>Fuzz {
         <span class="attr">#[clap(long, short)]
-        </span>start_checkpoint: <span class="prelude-ty">Option</span>&lt;u64&gt;,
+        </span>start: <span class="prelude-ty">Option</span>&lt;FuzzStartPoint&gt;,
         <span class="attr">#[clap(long, short)]
         </span>num_mutations_per_base: u64,
         <span class="attr">#[clap(long, short = <span class="string">&#39;b&#39;</span>, default_value = <span class="string">&quot;18446744073709551614&quot;</span>)]
@@ -390,36 +431,43 @@
 
 <span class="attr">#[async_recursion]
 </span><span class="kw">pub async fn </span>execute_replay_command(
-    rpc_url: String,
+    rpc_url: <span class="prelude-ty">Option</span>&lt;String&gt;,
     safety_checks: bool,
     use_authority: bool,
+    cfg_path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
     cmd: ReplayToolCommand,
-) -&gt; anyhow::Result&lt;(u64, u64)&gt; {
+) -&gt; anyhow::Result&lt;<span class="prelude-ty">Option</span>&lt;(u64, u64)&gt;&gt; {
     <span class="kw">let </span>safety = <span class="kw">if </span>safety_checks {
         ExpensiveSafetyCheckConfig::new_enable_all()
     } <span class="kw">else </span>{
         ExpensiveSafetyCheckConfig::default()
     };
     <span class="prelude-val">Ok</span>(<span class="kw">match </span>cmd {
+        ReplayToolCommand::GenerateDefaultConfig =&gt; {
+            <span class="kw">let </span>set = ReplayableNetworkConfigSet::default();
+            <span class="kw">let </span>path = set.save_config(<span class="prelude-val">None</span>).unwrap();
+            <span class="macro">println!</span>(<span class="string">&quot;Default config saved to: {}&quot;</span>, path.to_str().unwrap());
+            <span class="macro">warn!</span>(<span class="string">&quot;Note: default config nodes might prune epochs/objects&quot;</span>);
+            <span class="prelude-val">None
+        </span>}
         ReplayToolCommand::Fuzz {
-            start_checkpoint,
+            start,
             num_mutations_per_base,
             num_base_transactions,
         } =&gt; {
             <span class="kw">let </span>config = ReplayFuzzerConfig {
                 num_mutations_per_base,
-                mutator: Box::new(ShuffleMutator {
-                    rng: rand::rngs::StdRng::from_seed([<span class="number">0u8</span>; <span class="number">32</span>]),
-                    num_mutations_per_base_left: num_mutations_per_base,
-                }),
-                tx_source: TransactionSource::TailLatest { start_checkpoint },
+                mutator: Box::new(base_fuzzers(num_mutations_per_base)),
+                tx_source: TransactionSource::TailLatest { start },
                 fail_over_on_err: <span class="bool-val">false</span>,
                 expensive_safety_check_config: Default::default(),
             };
-            <span class="kw">let </span>fuzzer = ReplayFuzzer::new(rpc_url, config).<span class="kw">await</span>.unwrap();
+            <span class="kw">let </span>fuzzer = ReplayFuzzer::new(rpc_url.expect(<span class="string">&quot;Url must be provided&quot;</span>), config)
+                .<span class="kw">await
+                </span>.unwrap();
             fuzzer.run(num_base_transactions).<span class="kw">await</span>.unwrap();
-            (<span class="number">1u64</span>, <span class="number">1u64</span>)
-        }
+            <span class="prelude-val">None
+        </span>}
         ReplayToolCommand::ReplayDump { path, show_effects } =&gt; {
             <span class="kw">let </span><span class="kw-2">mut </span>lx = LocalExec::new_for_state_dump(<span class="kw-2">&amp;</span>path).<span class="kw">await</span><span class="question-mark">?</span>;
             <span class="kw">let </span>(sandbox_state, node_dump_state) = lx.execute_state_dump(safety).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -440,7 +488,7 @@
             }
 
             <span class="macro">info!</span>(<span class="string">&quot;Execution finished successfully. Local and on-chain effects match.&quot;</span>);
-            (<span class="number">1u64</span>, <span class="number">1u64</span>)
+            <span class="prelude-val">Some</span>((<span class="number">1u64</span>, <span class="number">1u64</span>))
         }
         ReplayToolCommand::ReplayTransaction {
             tx_digest,
@@ -448,12 +496,14 @@
         } =&gt; {
             <span class="kw">let </span>tx_digest = TransactionDigest::from_str(<span class="kw-2">&amp;</span>tx_digest)<span class="question-mark">?</span>;
             <span class="macro">info!</span>(<span class="string">&quot;Executing tx: {}&quot;</span>, tx_digest);
-            <span class="kw">let </span>sandbox_state = LocalExec::new_from_fn_url(<span class="kw-2">&amp;</span>rpc_url)
-                .<span class="kw">await</span><span class="question-mark">?
-                </span>.init_for_execution()
-                .<span class="kw">await</span><span class="question-mark">?
-                </span>.execute_transaction(<span class="kw-2">&amp;</span>tx_digest, safety, use_authority)
-                .<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="kw">let </span>sandbox_state = LocalExec::replay_with_network_config(
+                rpc_url,
+                cfg_path.map(|p| p.to_str().unwrap().to_string()),
+                tx_digest,
+                safety,
+                use_authority,
+            )
+            .<span class="kw">await</span><span class="question-mark">?</span>;
 
             <span class="kw">let </span>effects = sandbox_state.local_exec_effects.clone();
             <span class="kw">if </span>show_effects {
@@ -463,11 +513,12 @@
             sandbox_state.check_effects()<span class="question-mark">?</span>;
 
             <span class="macro">info!</span>(<span class="string">&quot;Execution finished successfully. Local and on-chain effects match.&quot;</span>);
-            (<span class="number">1u64</span>, <span class="number">1u64</span>)
+            <span class="prelude-val">Some</span>((<span class="number">1u64</span>, <span class="number">1u64</span>))
         }
 
         ReplayToolCommand::Report =&gt; {
-            <span class="kw">let </span><span class="kw-2">mut </span>lx = LocalExec::new_from_fn_url(<span class="kw-2">&amp;</span>rpc_url).<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>lx =
+                LocalExec::new_from_fn_url(<span class="kw-2">&amp;</span>rpc_url.expect(<span class="string">&quot;Url must be provided&quot;</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
             <span class="kw">let </span>epoch_table = lx.protocol_ver_to_epoch_map().<span class="kw">await</span><span class="question-mark">?</span>;
 
             <span class="comment">// We need this for other activities in this session
@@ -506,8 +557,8 @@
                     <span class="macro">println!</span>(<span class="string">&quot;Package: {} Seq: {}&quot;</span>, package_id, seq_num);
                 }
             }
-            (<span class="number">0u64</span>, <span class="number">0u64</span>)
-        }
+            <span class="prelude-val">None
+        </span>}
 
         ReplayToolCommand::ReplayCheckpoints {
             start,
@@ -532,7 +583,7 @@
                 handles.push(tokio::spawn(<span class="kw">async move </span>{
                     <span class="macro">info!</span>(<span class="string">&quot;Spawning task {task_count} for checkpoints {checkpoints:?}&quot;</span>);
                     <span class="kw">let </span>time = std::time::Instant::now();
-                    <span class="kw">let </span>(succeeded, total) = LocalExec::new_from_fn_url(<span class="kw-2">&amp;</span>rpc_url)
+                    <span class="kw">let </span>(succeeded, total) = LocalExec::new_from_fn_url(<span class="kw-2">&amp;</span>rpc_url.expect(<span class="string">&quot;Url must be provided&quot;</span>))
                         .<span class="kw">await
                         </span>.unwrap()
                         .init_for_execution()
@@ -574,14 +625,15 @@
                 total_time_ms,
                 (total_tx <span class="kw">as </span>f64) / (total_time_ms <span class="kw">as </span>f64 / <span class="number">1000.0</span>)
             );
-            (total_succeeded, total_tx)
+            <span class="prelude-val">Some</span>((total_succeeded, total_tx))
         }
         ReplayToolCommand::ReplayEpoch {
             epoch,
             terminate_early,
             max_tasks,
         } =&gt; {
-            <span class="kw">let </span>lx = LocalExec::new_from_fn_url(<span class="kw-2">&amp;</span>rpc_url).<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="kw">let </span>lx =
+                LocalExec::new_from_fn_url(<span class="kw-2">&amp;</span>rpc_url.clone().expect(<span class="string">&quot;Url must be provided&quot;</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
 
             <span class="kw">let </span>(start, end) = lx.checkpoints_for_epoch(epoch).<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -593,6 +645,7 @@
                 rpc_url,
                 safety_checks,
                 use_authority,
+                cfg_path,
                 ReplayToolCommand::ReplayCheckpoints {
                     start,
                     end,
@@ -602,13 +655,16 @@
             )
             .<span class="kw">await</span>;
             <span class="kw">match </span>status {
-                <span class="prelude-val">Ok</span>((succeeded, total)) =&gt; {
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>((succeeded, total))) =&gt; {
                     <span class="macro">info!</span>(
                         <span class="string">&quot;Epoch {} replay finished {} out of {} TXs&quot;</span>,
                         epoch, succeeded, total
                     );
 
-                    <span class="kw">return </span><span class="prelude-val">Ok</span>((succeeded, total));
+                    <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>((succeeded, total)));
+                }
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; {
+                    <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
                 }
                 <span class="prelude-val">Err</span>(e) =&gt; {
                     <span class="macro">error!</span>(<span class="string">&quot;Epoch {} replay failed: {:?}&quot;</span>, epoch, e);

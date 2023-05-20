@@ -206,33 +206,6 @@
 <a href="#206" id="206">206</a>
 <a href="#207" id="207">207</a>
 <a href="#208" id="208">208</a>
-<a href="#209" id="209">209</a>
-<a href="#210" id="210">210</a>
-<a href="#211" id="211">211</a>
-<a href="#212" id="212">212</a>
-<a href="#213" id="213">213</a>
-<a href="#214" id="214">214</a>
-<a href="#215" id="215">215</a>
-<a href="#216" id="216">216</a>
-<a href="#217" id="217">217</a>
-<a href="#218" id="218">218</a>
-<a href="#219" id="219">219</a>
-<a href="#220" id="220">220</a>
-<a href="#221" id="221">221</a>
-<a href="#222" id="222">222</a>
-<a href="#223" id="223">223</a>
-<a href="#224" id="224">224</a>
-<a href="#225" id="225">225</a>
-<a href="#226" id="226">226</a>
-<a href="#227" id="227">227</a>
-<a href="#228" id="228">228</a>
-<a href="#229" id="229">229</a>
-<a href="#230" id="230">230</a>
-<a href="#231" id="231">231</a>
-<a href="#232" id="232">232</a>
-<a href="#233" id="233">233</a>
-<a href="#234" id="234">234</a>
-<a href="#235" id="235">235</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -249,7 +222,6 @@
     transaction_provider::{TransactionProvider, TransactionSource},
     types::ReplayEngineError,
 };
-<span class="kw">use </span>rand::seq::SliceRandom;
 
 <span class="comment">// Step 1: Get a transaction T from the network
 // Step 2: Create the sandbox and verify the TX does not fork locally
@@ -403,7 +375,11 @@
                 <span class="string">&quot;Ended fuzz with for base TX {}\n&quot;</span>,
                 <span class="self">self</span>.sandbox_state.transaction_info.tx_digest
             );
-            <span class="self">self </span>= <span class="self">self</span>.re_init().<span class="kw">await</span>.unwrap();
+            <span class="self">self </span>= <span class="self">self
+                </span>.re_init()
+                .<span class="kw">await
+                </span>.map_err(ReplayEngineError::from)
+                .map_err(ReplayFuzzError::from)<span class="question-mark">?</span>;
             num_base_tx -= <span class="number">1</span>;
         }
 
@@ -436,36 +412,6 @@
 <span class="kw">impl </span>From&lt;ReplayEngineError&gt; <span class="kw">for </span>ReplayFuzzError {
     <span class="kw">fn </span>from(err: ReplayEngineError) -&gt; <span class="self">Self </span>{
         ReplayFuzzError::LocalExecError { err }
-    }
-}
-
-<span class="kw">pub struct </span>ShuffleMutator {
-    <span class="kw">pub </span>rng: rand::rngs::StdRng,
-    <span class="kw">pub </span>num_mutations_per_base_left: u64,
-}
-
-<span class="kw">impl </span>TransactionKindMutator <span class="kw">for </span>ShuffleMutator {
-    <span class="kw">fn </span>mutate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, transaction_kind: <span class="kw-2">&amp;</span>TransactionKind) -&gt; <span class="prelude-ty">Option</span>&lt;TransactionKind&gt; {
-        <span class="kw">if </span><span class="self">self</span>.num_mutations_per_base_left == <span class="number">0 </span>{
-            <span class="comment">// Nothing else to do
-            </span><span class="kw">return </span><span class="prelude-val">None</span>;
-        }
-
-        <span class="self">self</span>.num_mutations_per_base_left -= <span class="number">1</span>;
-        <span class="kw">if let </span>TransactionKind::ProgrammableTransaction(<span class="kw-2">mut </span>p) = transaction_kind.clone() {
-            <span class="comment">// Simple command and arg shuffle mutation
-            // TODO: do more complicated mutations
-            </span>p.commands.shuffle(<span class="kw-2">&amp;mut </span><span class="self">self</span>.rng);
-            p.inputs.shuffle(<span class="kw-2">&amp;mut </span><span class="self">self</span>.rng);
-            <span class="prelude-val">Some</span>(TransactionKind::ProgrammableTransaction(p))
-        } <span class="kw">else </span>{
-            <span class="comment">// Other types not supported yet
-            </span><span class="prelude-val">None
-        </span>}
-    }
-
-    <span class="kw">fn </span>reset(<span class="kw-2">&amp;mut </span><span class="self">self</span>, mutations_per_base: u64) {
-        <span class="self">self</span>.num_mutations_per_base_left = mutations_per_base;
     }
 }
 </code></pre></div></section></main></body></html>

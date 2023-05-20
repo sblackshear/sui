@@ -469,27 +469,15 @@
 <a href="#469" id="469">469</a>
 <a href="#470" id="470">470</a>
 <a href="#471" id="471">471</a>
-<a href="#472" id="472">472</a>
-<a href="#473" id="473">473</a>
-<a href="#474" id="474">474</a>
-<a href="#475" id="475">475</a>
-<a href="#476" id="476">476</a>
-<a href="#477" id="477">477</a>
-<a href="#478" id="478">478</a>
-<a href="#479" id="479">479</a>
-<a href="#480" id="480">480</a>
-<a href="#481" id="481">481</a>
-<a href="#482" id="482">482</a>
-<a href="#483" id="483">483</a>
-<a href="#484" id="484">484</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) 2021, Facebook, Inc. and its affiliates
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 </span><span class="attr">#![allow(clippy::mutable_key_type)]
 
-</span><span class="kw">use </span><span class="kw">crate</span>::utils::gc_round;
-<span class="kw">use crate</span>::{metrics::ConsensusMetrics, ConsensusError, Outcome, SequenceNumber};
+</span><span class="kw">use </span><span class="kw">crate</span>::bullshark::Bullshark;
+<span class="kw">use </span><span class="kw">crate</span>::utils::gc_round;
+<span class="kw">use crate</span>::{metrics::ConsensusMetrics, ConsensusError, SequenceNumber};
 <span class="kw">use </span>config::{AuthorityIdentifier, Committee};
 <span class="kw">use </span>fastcrypto::hash::Hash;
 <span class="kw">use </span>mysten_metrics::spawn_logged_monitored_task;
@@ -734,17 +722,6 @@
     </span>}
 }
 
-<span class="doccomment">/// Describe how to sequence input certificates.
-</span><span class="kw">pub trait </span>ConsensusProtocol {
-    <span class="kw">fn </span>process_certificate(
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        <span class="comment">// The state of the consensus protocol.
-        </span>state: <span class="kw-2">&amp;mut </span>ConsensusState,
-        <span class="comment">// The new certificate.
-        </span>certificate: Certificate,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;(Outcome, Vec&lt;CommittedSubDag&gt;), ConsensusError&gt;;
-}
-
 <span class="doccomment">/// Holds information about a committed round in consensus. When a certificate gets committed then
 /// the corresponding certificate&#39;s round is considered a &quot;committed&quot; round. It bears both the
 /// committed round and the corresponding garbage collection round.
@@ -785,7 +762,7 @@
     }
 }
 
-<span class="kw">pub struct </span>Consensus&lt;ConsensusProtocol&gt; {
+<span class="kw">pub struct </span>Consensus {
     <span class="doccomment">/// The committee information.
     </span>committee: Committee,
 
@@ -802,7 +779,7 @@
     </span>tx_sequence: metered_channel::Sender&lt;CommittedSubDag&gt;,
 
     <span class="doccomment">/// The consensus protocol to run.
-    </span>protocol: ConsensusProtocol,
+    </span>protocol: Bullshark,
 
     <span class="doccomment">/// Metrics handler
     </span>metrics: Arc&lt;ConsensusMetrics&gt;,
@@ -811,10 +788,7 @@
     </span>state: ConsensusState,
 }
 
-<span class="kw">impl</span>&lt;Protocol&gt; Consensus&lt;Protocol&gt;
-<span class="kw">where
-    </span>Protocol: ConsensusProtocol + Send + <span class="lifetime">&#39;static</span>,
-{
+<span class="kw">impl </span>Consensus {
     <span class="attr">#[must_use]
     </span><span class="kw">pub fn </span>spawn(
         committee: Committee,
@@ -826,7 +800,7 @@
         tx_committed_certificates: metered_channel::Sender&lt;(Round, Vec&lt;Certificate&gt;)&gt;,
         tx_consensus_round_updates: watch::Sender&lt;ConsensusRound&gt;,
         tx_sequence: metered_channel::Sender&lt;CommittedSubDag&gt;,
-        protocol: Protocol,
+        protocol: Bullshark,
         metrics: Arc&lt;ConsensusMetrics&gt;,
     ) -&gt; JoinHandle&lt;()&gt; {
         <span class="comment">// The consensus state (everything else is immutable).

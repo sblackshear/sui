@@ -1285,6 +1285,17 @@
 <a href="#1285" id="1285">1285</a>
 <a href="#1286" id="1286">1286</a>
 <a href="#1287" id="1287">1287</a>
+<a href="#1288" id="1288">1288</a>
+<a href="#1289" id="1289">1289</a>
+<a href="#1290" id="1290">1290</a>
+<a href="#1291" id="1291">1291</a>
+<a href="#1292" id="1292">1292</a>
+<a href="#1293" id="1293">1293</a>
+<a href="#1294" id="1294">1294</a>
+<a href="#1295" id="1295">1295</a>
+<a href="#1296" id="1296">1296</a>
+<a href="#1297" id="1297">1297</a>
+<a href="#1298" id="1298">1298</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -2220,6 +2231,17 @@
                     .protocol_config()
                     .clone()))
                 .map(ProtocolConfigResponse::from)<span class="question-mark">?</span>)
+        })
+    }
+
+    <span class="attr">#[instrument(skip(<span class="self">self</span>))]
+    </span><span class="kw">async fn </span>get_chain_identifier(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RpcResult&lt;String&gt; {
+        <span class="macro">with_tracing!</span>(<span class="kw">async move </span>{
+            <span class="kw">let </span>ci = <span class="self">self
+                </span>.state
+                .get_chain_identifier()
+                .ok_or(<span class="macro">anyhow!</span>(<span class="string">&quot;Chain identifier not found&quot;</span>))<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>(ci.to_string())
         })
     }
 }

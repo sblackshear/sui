@@ -245,6 +245,17 @@
 <a href="#245" id="245">245</a>
 <a href="#246" id="246">246</a>
 <a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -262,7 +273,10 @@
 ///     pub fn new_constant(&amp;self) -&gt; u64 {
 ///         self.new_constant.expect(Self::CONSTANT_ERR_MSG)
 ///     }
-///
+///     /// Returns the value of the field if exists at the given version, otherise None.
+///     pub fn new_constant_as_option(&amp;self) -&gt; Option&lt;u64&gt; {
+///         self.new_constant
+///     }
 ///     // We auto derive an enum such that the variants are all the types of the fields
 ///     pub enum ProtocolConfigValue {
 ///        u32(u32),
@@ -323,10 +337,18 @@
                             <span class="macro">panic!</span>(<span class="string">&quot;Expected angle bracketed arguments.&quot;</span>);
                         };
 
+                        <span class="kw">let </span>as_option_name = <span class="macro">format!</span>(<span class="string">&quot;{field_name}_as_option&quot;</span>);
+                        <span class="kw">let </span>as_option_name: proc_macro2::TokenStream =
+                        as_option_name.parse().unwrap();
+
                         <span class="kw">let </span>getter = <span class="macro">quote! </span>{
                             <span class="comment">// Derive the getter
                             </span><span class="kw">pub fn </span>#field_name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; #inner_type {
                                 <span class="self">self</span>.#field_name.expect(<span class="self">Self</span>::CONSTANT_ERR_MSG)
+                            }
+
+                            <span class="kw">pub fn </span>#as_option_name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; #field_type {
+                                <span class="self">self</span>.#field_name
                             }
                         };
 

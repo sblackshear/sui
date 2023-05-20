@@ -442,6 +442,9 @@
 <a href="#442" id="442">442</a>
 <a href="#443" id="443">443</a>
 <a href="#444" id="444">444</a>
+<a href="#445" id="445">445</a>
+<a href="#446" id="446">446</a>
+<a href="#447" id="447">447</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -514,7 +517,6 @@
 ) -&gt; SuiResult&lt;(SuiGasStatus, InputObjects)&gt; {
     transaction.check_version_supported(epoch_store.protocol_config())<span class="question-mark">?</span>;
     transaction.validity_check(epoch_store.protocol_config())<span class="question-mark">?</span>;
-    check_non_system_packages_to_be_published(transaction, epoch_store.protocol_config(), metrics)<span class="question-mark">?</span>;
     <span class="kw">let </span>input_objects = transaction.input_objects()<span class="question-mark">?</span>;
     transaction_signing_filter::check_transaction_for_signing(
         transaction,
@@ -522,6 +524,10 @@
         transaction_deny_config,
         store,
     )<span class="question-mark">?</span>;
+
+    <span class="comment">// Runs verifier, which could be expensive.
+    </span>check_non_system_packages_to_be_published(transaction, epoch_store.protocol_config(), metrics)<span class="question-mark">?</span>;
+
     <span class="kw">let </span>objects = store.check_input_objects(<span class="kw-2">&amp;</span>input_objects, epoch_store.protocol_config())<span class="question-mark">?</span>;
     <span class="kw">let </span>gas_status = get_gas_status(<span class="kw-2">&amp;</span>objects, transaction.gas(), epoch_store, transaction).<span class="kw">await</span><span class="question-mark">?</span>;
     <span class="kw">let </span>input_objects = check_objects(transaction, input_objects, objects)<span class="question-mark">?</span>;
