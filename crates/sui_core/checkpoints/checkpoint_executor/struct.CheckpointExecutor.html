@@ -4,7 +4,7 @@
     authority_store: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/sync/struct.Arc.html" title="struct alloc::sync::Arc">Arc</a>&lt;<a class="struct" href="../../authority/struct.AuthorityStore.html" title="struct sui_core::authority::AuthorityStore">AuthorityStore</a>&gt;,
     tx_manager: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/sync/struct.Arc.html" title="struct alloc::sync::Arc">Arc</a>&lt;TransactionManager&gt;,
     accumulator: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/sync/struct.Arc.html" title="struct alloc::sync::Arc">Arc</a>&lt;<a class="struct" href="../../state_accumulator/struct.StateAccumulator.html" title="struct sui_core::state_accumulator::StateAccumulator">StateAccumulator</a>&gt;,
-    config: <a class="struct" href="../../../sui_config/node/struct.CheckpointExecutorConfig.html" title="struct sui_config::node::CheckpointExecutorConfig">CheckpointExecutorConfig</a>,
+    config: CheckpointExecutorConfig,
     prometheus_registry: &amp;Registry
 ) -&gt; Self</h4></section><section id="method.new_for_tests" class="method"><a class="srclink rightside" href="../../../src/sui_core/checkpoints/checkpoint_executor/mod.rs.html#100-116">source</a><h4 class="code-header">pub fn <a href="#method.new_for_tests" class="fn">new_for_tests</a>(
     mailbox: Receiver&lt;<a class="type" href="../../../sui_types/messages_checkpoint/type.VerifiedCheckpoint.html" title="type sui_types::messages_checkpoint::VerifiedCheckpoint">VerifiedCheckpoint</a>&gt;,
