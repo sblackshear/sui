@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `narwhal/test-utils/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-f3501f0f5ae15dfb.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="narwhal_test_utils" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (d3f416dc0 2023-05-18)" data-search-js="search-4926e5fc22a5646a.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../narwhal_test_utils/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `narwhal/test-utils/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-f3501f0f5ae15dfb.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="narwhal_test_utils" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (77f4f828a 2023-05-20)" data-search-js="search-4926e5fc22a5646a.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../narwhal_test_utils/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1161,6 +1161,56 @@
 <a href="#1161" id="1161">1161</a>
 <a href="#1162" id="1162">1162</a>
 <a href="#1163" id="1163">1163</a>
+<a href="#1164" id="1164">1164</a>
+<a href="#1165" id="1165">1165</a>
+<a href="#1166" id="1166">1166</a>
+<a href="#1167" id="1167">1167</a>
+<a href="#1168" id="1168">1168</a>
+<a href="#1169" id="1169">1169</a>
+<a href="#1170" id="1170">1170</a>
+<a href="#1171" id="1171">1171</a>
+<a href="#1172" id="1172">1172</a>
+<a href="#1173" id="1173">1173</a>
+<a href="#1174" id="1174">1174</a>
+<a href="#1175" id="1175">1175</a>
+<a href="#1176" id="1176">1176</a>
+<a href="#1177" id="1177">1177</a>
+<a href="#1178" id="1178">1178</a>
+<a href="#1179" id="1179">1179</a>
+<a href="#1180" id="1180">1180</a>
+<a href="#1181" id="1181">1181</a>
+<a href="#1182" id="1182">1182</a>
+<a href="#1183" id="1183">1183</a>
+<a href="#1184" id="1184">1184</a>
+<a href="#1185" id="1185">1185</a>
+<a href="#1186" id="1186">1186</a>
+<a href="#1187" id="1187">1187</a>
+<a href="#1188" id="1188">1188</a>
+<a href="#1189" id="1189">1189</a>
+<a href="#1190" id="1190">1190</a>
+<a href="#1191" id="1191">1191</a>
+<a href="#1192" id="1192">1192</a>
+<a href="#1193" id="1193">1193</a>
+<a href="#1194" id="1194">1194</a>
+<a href="#1195" id="1195">1195</a>
+<a href="#1196" id="1196">1196</a>
+<a href="#1197" id="1197">1197</a>
+<a href="#1198" id="1198">1198</a>
+<a href="#1199" id="1199">1199</a>
+<a href="#1200" id="1200">1200</a>
+<a href="#1201" id="1201">1201</a>
+<a href="#1202" id="1202">1202</a>
+<a href="#1203" id="1203">1203</a>
+<a href="#1204" id="1204">1204</a>
+<a href="#1205" id="1205">1205</a>
+<a href="#1206" id="1206">1206</a>
+<a href="#1207" id="1207">1207</a>
+<a href="#1208" id="1208">1208</a>
+<a href="#1209" id="1209">1209</a>
+<a href="#1210" id="1210">1210</a>
+<a href="#1211" id="1211">1211</a>
+<a href="#1212" id="1212">1212</a>
+<a href="#1213" id="1213">1213</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) 2021, Facebook, Inc. and its affiliates
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
@@ -1195,6 +1245,7 @@
 <span class="kw">use </span>store::rocks::DBMap;
 <span class="kw">use </span>store::rocks::MetricConf;
 <span class="kw">use </span>store::rocks::ReadWriteOptions;
+<span class="kw">use </span>sui_protocol_config::{ProtocolConfig, ProtocolVersion};
 <span class="kw">use </span>tokio::sync::mpsc::{channel, Receiver, Sender};
 <span class="kw">use </span>tracing::info;
 <span class="kw">use </span>types::{
@@ -1217,6 +1268,10 @@
 <span class="kw">pub const </span>CERTIFICATE_DIGEST_BY_ROUND_CF: <span class="kw-2">&amp;</span>str = <span class="string">&quot;certificate_digest_by_round&quot;</span>;
 <span class="kw">pub const </span>CERTIFICATE_DIGEST_BY_ORIGIN_CF: <span class="kw-2">&amp;</span>str = <span class="string">&quot;certificate_digest_by_origin&quot;</span>;
 <span class="kw">pub const </span>PAYLOAD_CF: <span class="kw-2">&amp;</span>str = <span class="string">&quot;payload&quot;</span>;
+
+<span class="kw">pub fn </span>latest_protocol_version() -&gt; ProtocolConfig {
+    ProtocolConfig::get_for_version(ProtocolVersion::max())
+}
 
 <span class="kw">pub fn </span>temp_dir() -&gt; std::path::PathBuf {
     tempfile::tempdir()
@@ -1291,11 +1346,14 @@
 <span class="comment">////////////////////////////////////////////////////////////////
 </span><span class="doccomment">/// Headers, Votes, Certificates
 </span><span class="comment">////////////////////////////////////////////////////////////////
-</span><span class="kw">pub fn </span>fixture_payload(number_of_batches: u8) -&gt; IndexMap&lt;BatchDigest, (WorkerId, TimestampMs)&gt; {
+</span><span class="kw">pub fn </span>fixture_payload(
+    number_of_batches: u8,
+    protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
+) -&gt; IndexMap&lt;BatchDigest, (WorkerId, TimestampMs)&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>payload: IndexMap&lt;BatchDigest, (WorkerId, TimestampMs)&gt; = IndexMap::new();
 
     <span class="kw">for _ in </span><span class="number">0</span>..number_of_batches {
-        <span class="kw">let </span>batch_digest = batch().digest();
+        <span class="kw">let </span>batch_digest = batch(protocol_config).digest();
 
         payload.insert(batch_digest, (<span class="number">0</span>, <span class="number">0</span>));
     }
@@ -1305,22 +1363,26 @@
 
 <span class="comment">// will create a batch with randomly formed transactions
 // dictated by the parameter number_of_transactions
-</span><span class="kw">pub fn </span>fixture_batch_with_transactions(number_of_transactions: u32) -&gt; Batch {
+</span><span class="kw">pub fn </span>fixture_batch_with_transactions(
+    number_of_transactions: u32,
+    protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
+) -&gt; Batch {
     <span class="kw">let </span>transactions = (<span class="number">0</span>..number_of_transactions)
         .map(|_v| transaction())
         .collect();
 
-    Batch::new(transactions)
+    Batch::new(transactions, protocol_config)
 }
 
 <span class="kw">pub fn </span>fixture_payload_with_rand&lt;R: Rng + <span class="question-mark">?</span>Sized&gt;(
     number_of_batches: u8,
     rand: <span class="kw-2">&amp;mut </span>R,
+    protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
 ) -&gt; IndexMap&lt;BatchDigest, (WorkerId, TimestampMs)&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>payload: IndexMap&lt;BatchDigest, (WorkerId, TimestampMs)&gt; = IndexMap::new();
 
     <span class="kw">for _ in </span><span class="number">0</span>..number_of_batches {
-        <span class="kw">let </span>batch_digest = batch_with_rand(rand).digest();
+        <span class="kw">let </span>batch_digest = batch_with_rand(rand, protocol_config).digest();
 
         payload.insert(batch_digest, (<span class="number">0</span>, <span class="number">0</span>));
     }
@@ -1335,11 +1397,11 @@
         .collect()
 }
 
-<span class="kw">pub fn </span>batch_with_rand&lt;R: Rng + <span class="question-mark">?</span>Sized&gt;(rand: <span class="kw-2">&amp;mut </span>R) -&gt; Batch {
-    Batch::new(<span class="macro">vec!</span>[
-        transaction_with_rand(rand),
-        transaction_with_rand(rand),
-    ])
+<span class="kw">pub fn </span>batch_with_rand&lt;R: Rng + <span class="question-mark">?</span>Sized&gt;(rand: <span class="kw-2">&amp;mut </span>R, protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig) -&gt; Batch {
+    Batch::new(
+        <span class="macro">vec!</span>[transaction_with_rand(rand), transaction_with_rand(rand)],
+        protocol_config,
+    )
 }
 
 <span class="comment">// Fixture
@@ -1527,30 +1589,33 @@
 </span><span class="comment">////////////////////////////////////////////////////////////////
 
 // Fixture
-</span><span class="kw">pub fn </span>batch() -&gt; Batch {
-    Batch::new(<span class="macro">vec!</span>[transaction(), transaction()])
+</span><span class="kw">pub fn </span>batch(protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig) -&gt; Batch {
+    Batch::new(<span class="macro">vec!</span>[transaction(), transaction()], protocol_config)
 }
 
 <span class="doccomment">/// generate multiple fixture batches. The number of generated batches
 /// are dictated by the parameter num_of_batches.
-</span><span class="kw">pub fn </span>batches(num_of_batches: usize) -&gt; Vec&lt;Batch&gt; {
+</span><span class="kw">pub fn </span>batches(num_of_batches: usize, protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig) -&gt; Vec&lt;Batch&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>batches = Vec::new();
 
     <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..num_of_batches + <span class="number">1 </span>{
-        batches.push(batch_with_transactions(i));
+        batches.push(batch_with_transactions(i, protocol_config));
     }
 
     batches
 }
 
-<span class="kw">pub fn </span>batch_with_transactions(num_of_transactions: usize) -&gt; Batch {
+<span class="kw">pub fn </span>batch_with_transactions(
+    num_of_transactions: usize,
+    protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
+) -&gt; Batch {
     <span class="kw">let </span><span class="kw-2">mut </span>transactions = Vec::new();
 
     <span class="kw">for _ in </span><span class="number">0</span>..num_of_transactions {
         transactions.push(transaction());
     }
 
-    Batch::new(transactions)
+    Batch::new(transactions, protocol_config)
 }
 
 <span class="kw">const </span>BATCHES_CF: <span class="kw-2">&amp;</span>str = <span class="string">&quot;batches&quot;</span>;
@@ -1575,8 +1640,9 @@
     range: RangeInclusive&lt;Round&gt;,
     initial_parents: <span class="kw-2">&amp;</span>BTreeSet&lt;CertificateDigest&gt;,
     ids: <span class="kw-2">&amp;</span>[AuthorityIdentifier],
+    protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
 ) -&gt; (VecDeque&lt;Certificate&gt;, BTreeSet&lt;CertificateDigest&gt;) {
-    make_certificates(committee, range, initial_parents, ids, <span class="number">0.0</span>)
+    make_certificates(committee, range, initial_parents, ids, <span class="number">0.0</span>, protocol_config)
 }
 
 <span class="comment">// Outputs rounds worth of certificates with optimal parents, signed
@@ -1585,8 +1651,16 @@
     initial_parents: <span class="kw-2">&amp;</span>BTreeSet&lt;CertificateDigest&gt;,
     committee: <span class="kw-2">&amp;</span>Committee,
     keys: <span class="kw-2">&amp;</span>[(AuthorityIdentifier, KeyPair)],
+    protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
 ) -&gt; (VecDeque&lt;Certificate&gt;, BTreeSet&lt;CertificateDigest&gt;) {
-    make_signed_certificates(range, initial_parents, committee, keys, <span class="number">0.0</span>)
+    make_signed_certificates(
+        range,
+        initial_parents,
+        committee,
+        keys,
+        <span class="number">0.0</span>,
+        protocol_config,
+    )
 }
 
 <span class="comment">// Bernoulli-samples from a set of ancestors passed as a argument,
@@ -1642,8 +1716,10 @@
     initial_parents: <span class="kw-2">&amp;</span>BTreeSet&lt;CertificateDigest&gt;,
     ids: <span class="kw-2">&amp;</span>[AuthorityIdentifier],
     failure_probability: f64,
+    protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
 ) -&gt; (VecDeque&lt;Certificate&gt;, BTreeSet&lt;CertificateDigest&gt;) {
-    <span class="kw">let </span>generator = |pk, round, parents| mock_certificate(committee, pk, round, parents);
+    <span class="kw">let </span>generator =
+        |pk, round, parents| mock_certificate(committee, pk, round, parents, protocol_config);
 
     rounds_of_certificates(range, initial_parents, ids, failure_probability, generator)
 }
@@ -1662,6 +1738,7 @@
     initial_parents: Vec&lt;Certificate&gt;,
     names: <span class="kw-2">&amp;</span>[AuthorityIdentifier],
     slow_nodes: <span class="kw-2">&amp;</span>[(AuthorityIdentifier, f64)],
+    protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
 ) -&gt; (VecDeque&lt;Certificate&gt;, Vec&lt;Certificate&gt;) {
     <span class="kw">let </span><span class="kw-2">mut </span>rand = StdRng::seed_from_u64(<span class="number">1</span>);
 
@@ -1688,7 +1765,8 @@
                 committee,
             );
 
-            <span class="kw">let </span>(<span class="kw">_</span>, certificate) = mock_certificate(committee, <span class="kw-2">*</span>name, round, this_cert_parents);
+            <span class="kw">let </span>(<span class="kw">_</span>, certificate) =
+                mock_certificate(committee, <span class="kw-2">*</span>name, round, this_cert_parents, protocol_config);
             certificates.push_back(certificate.clone());
             next_parents.push(certificate);
         }
@@ -1767,6 +1845,7 @@
     epoch: Epoch,
     initial_parents: <span class="kw-2">&amp;</span>BTreeSet&lt;CertificateDigest&gt;,
     keys: <span class="kw-2">&amp;</span>[AuthorityIdentifier],
+    protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
 ) -&gt; (VecDeque&lt;Certificate&gt;, BTreeSet&lt;CertificateDigest&gt;) {
     <span class="kw">let </span><span class="kw-2">mut </span>certificates = VecDeque::new();
     <span class="kw">let </span><span class="kw-2">mut </span>parents = initial_parents.iter().cloned().collect::&lt;BTreeSet&lt;<span class="kw">_</span>&gt;&gt;();
@@ -1775,8 +1854,14 @@
     <span class="kw">for </span>round <span class="kw">in </span>range {
         next_parents.clear();
         <span class="kw">for </span>name <span class="kw">in </span>keys {
-            <span class="kw">let </span>(digest, certificate) =
-                mock_certificate_with_epoch(committee, <span class="kw-2">*</span>name, round, epoch, parents.clone());
+            <span class="kw">let </span>(digest, certificate) = mock_certificate_with_epoch(
+                committee,
+                <span class="kw-2">*</span>name,
+                round,
+                epoch,
+                parents.clone(),
+                protocol_config,
+            );
             certificates.push_back(certificate);
             next_parents.insert(digest);
         }
@@ -1792,13 +1877,15 @@
     committee: <span class="kw-2">&amp;</span>Committee,
     keys: <span class="kw-2">&amp;</span>[(AuthorityIdentifier, KeyPair)],
     failure_probability: f64,
+    protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
 ) -&gt; (VecDeque&lt;Certificate&gt;, BTreeSet&lt;CertificateDigest&gt;) {
     <span class="kw">let </span>ids = keys
         .iter()
         .map(|(authority, <span class="kw">_</span>)| <span class="kw-2">*</span>authority)
         .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
-    <span class="kw">let </span>generator =
-        |pk, round, parents| mock_signed_certificate(keys, pk, round, parents, committee);
+    <span class="kw">let </span>generator = |pk, round, parents| {
+        mock_signed_certificate(keys, pk, round, parents, committee, protocol_config)
+    };
 
     rounds_of_certificates(
         range,
@@ -1815,6 +1902,7 @@
     round: Round,
     parents: BTreeSet&lt;CertificateDigest&gt;,
     rand: <span class="kw-2">&amp;mut </span>R,
+    protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
 ) -&gt; (CertificateDigest, Certificate) {
     <span class="kw">let </span>header_builder = HeaderV1Builder::default();
     <span class="kw">let </span>header = header_builder
@@ -1822,7 +1910,7 @@
         .round(round)
         .epoch(<span class="number">0</span>)
         .parents(parents)
-        .payload(fixture_payload_with_rand(<span class="number">1</span>, rand))
+        .payload(fixture_payload_with_rand(<span class="number">1</span>, rand, protocol_config))
         .build()
         .unwrap();
     <span class="kw">let </span>certificate = Certificate::new_unsigned(committee, Header::V1(header), Vec::new()).unwrap();
@@ -1836,8 +1924,9 @@
     origin: AuthorityIdentifier,
     round: Round,
     parents: BTreeSet&lt;CertificateDigest&gt;,
+    protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
 ) -&gt; (CertificateDigest, Certificate) {
-    mock_certificate_with_epoch(committee, origin, round, <span class="number">0</span>, parents)
+    mock_certificate_with_epoch(committee, origin, round, <span class="number">0</span>, parents, protocol_config)
 }
 
 <span class="comment">// Creates a badly signed certificate from its given round, epoch, origin, and parents,
@@ -1848,6 +1937,7 @@
     round: Round,
     epoch: Epoch,
     parents: BTreeSet&lt;CertificateDigest&gt;,
+    protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
 ) -&gt; (CertificateDigest, Certificate) {
     <span class="kw">let </span>header_builder = HeaderV1Builder::default();
     <span class="kw">let </span>header = header_builder
@@ -1855,7 +1945,7 @@
         .round(round)
         .epoch(epoch)
         .parents(parents)
-        .payload(fixture_payload(<span class="number">1</span>))
+        .payload(fixture_payload(<span class="number">1</span>, protocol_config))
         .build()
         .unwrap();
     <span class="kw">let </span>certificate = Certificate::new_unsigned(committee, Header::V1(header), Vec::new()).unwrap();
@@ -1869,10 +1959,11 @@
     round: Round,
     parents: BTreeSet&lt;CertificateDigest&gt;,
     committee: <span class="kw-2">&amp;</span>Committee,
+    protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
 ) -&gt; (CertificateDigest, Certificate) {
     <span class="kw">let </span>header_builder = HeaderV1Builder::default()
         .author(origin)
-        .payload(fixture_payload(<span class="number">1</span>))
+        .payload(fixture_payload(<span class="number">1</span>, protocol_config))
         .round(round)
         .epoch(<span class="number">0</span>)
         .parents(parents);
@@ -1897,6 +1988,7 @@
     number_of_workers: NonZeroUsize,
     randomize_ports: bool,
     epoch: Epoch,
+    protocol_version: ProtocolVersion,
     stake: VecDeque&lt;Stake&gt;,
 }
 
@@ -1910,6 +2002,7 @@
     <span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             epoch: Epoch::default(),
+            protocol_version: ProtocolVersion::max(),
             rng: OsRng,
             committee_size: NonZeroUsize::new(<span class="number">4</span>).unwrap(),
             number_of_workers: NonZeroUsize::new(<span class="number">4</span>).unwrap(),
@@ -1940,6 +2033,11 @@
         <span class="self">self
     </span>}
 
+    <span class="kw">pub fn </span>protocol_version(<span class="kw-2">mut </span><span class="self">self</span>, protocol_version: ProtocolVersion) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.protocol_version = protocol_version;
+        <span class="self">self
+    </span>}
+
     <span class="kw">pub fn </span>stake_distribution(<span class="kw-2">mut </span><span class="self">self</span>, stake: VecDeque&lt;Stake&gt;) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.stake = stake;
         <span class="self">self
@@ -1949,6 +2047,7 @@
         Builder {
             rng,
             epoch: <span class="self">self</span>.epoch,
+            protocol_version: <span class="self">self</span>.protocol_version,
             committee_size: <span class="self">self</span>.committee_size,
             number_of_workers: <span class="self">self</span>.number_of_workers,
             randomize_ports: <span class="self">self</span>.randomize_ports,
@@ -2078,6 +2177,7 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         prior_round: Round,
         parents: <span class="kw-2">&amp;</span>BTreeSet&lt;CertificateDigest&gt;,
+        protocol_config: <span class="kw-2">&amp;</span>ProtocolConfig,
     ) -&gt; (Round, Vec&lt;Header&gt;) {
         <span class="kw">let </span>round = prior_round + <span class="number">1</span>;
         <span class="kw">let </span>next_headers = <span class="self">self
@@ -2090,7 +2190,7 @@
                     .round(round)
                     .epoch(<span class="number">0</span>)
                     .parents(parents.clone())
-                    .with_payload_batch(fixture_batch_with_transactions(<span class="number">10</span>), <span class="number">0</span>, <span class="number">0</span>)
+                    .with_payload_batch(fixture_batch_with_transactions(<span class="number">10</span>, protocol_config), <span class="number">0</span>, <span class="number">0</span>)
                     .build()
                     .unwrap();
                 Header::V1(header)
