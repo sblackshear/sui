@@ -3,7 +3,7 @@ var sourcesIndex = JSON.parse('{\
 "indexer_data_validation":["",[],["indexer_data_validation.rs"]],\
 "merge_coins":["",[],["merge_coins.rs"]],\
 "mysten_common":["",[["sync",[],["async_once_cell.rs","mod.rs","notify_once.rs","notify_read.rs"]]],["lib.rs"]],\
-"mysten_metrics":["",[],["guards.rs","histogram.rs","lib.rs"]],\
+"mysten_metrics":["",[],["guards.rs","histogram.rs","lib.rs","metered_channel.rs"]],\
 "mysten_network":["",[],["client.rs","codec.rs","config.rs","lib.rs","metrics.rs","multiaddr.rs","server.rs"]],\
 "mysten_util_mem":["",[],["allocators.rs","external_impls.rs","lib.rs","malloc_size.rs","memory_stats_noop.rs","sizeof.rs"]],\
 "mysten_util_mem_derive":["",[],["lib.rs"]],\
@@ -17,7 +17,7 @@ var sourcesIndex = JSON.parse('{\
 "narwhal_primary":["",[["block_synchronizer",[],["handler.rs","mock.rs","mod.rs","peers.rs"]],["grpc_server",[],["configuration.rs","metrics.rs","mod.rs","proposer.rs","validator.rs"]]],["aggregators.rs","block_remover.rs","block_waiter.rs","certificate_fetcher.rs","certifier.rs","lib.rs","metrics.rs","primary.rs","proposer.rs","state_handler.rs","synchronizer.rs","utils.rs"]],\
 "narwhal_storage":["",[],["certificate_store.rs","consensus_store.rs","header_store.rs","lib.rs","node_store.rs","payload_store.rs","proposer_store.rs","vote_digest_store.rs"]],\
 "narwhal_test_utils":["",[],["cluster.rs","lib.rs"]],\
-"narwhal_types":["",[],["consensus.rs","error.rs","lib.rs","metered_channel.rs","pre_subscribed_broadcast.rs","primary.rs","proto.rs","serde.rs","worker.rs"]],\
+"narwhal_types":["",[],["consensus.rs","error.rs","lib.rs","pre_subscribed_broadcast.rs","primary.rs","proto.rs","serde.rs","worker.rs"]],\
 "narwhal_worker":["",[],["batch_fetcher.rs","batch_maker.rs","client.rs","handlers.rs","lib.rs","metrics.rs","quorum_waiter.rs","transactions_server.rs","tx_validator.rs","worker.rs"]],\
 "prometheus_closure_metric":["",[],["lib.rs"]],\
 "shared_crypto":["",[],["intent.rs","lib.rs"]],\
